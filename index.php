@@ -40,7 +40,7 @@
                 </div>
             <?php else : ?>
                 <div class="content">
-                    <a id="download" href="" download>Download Image</a>
+                    <a id="download" href="" download>Download</a>
 
                     <span id="errors"></span>
 

@@ -126,16 +126,16 @@
     // Resolution option.
     if($resolution == "1920") {
         $resolution = "-vf scale=1920:-1";
-        $gifskiRes = "--width 1920 --height 1080";
+        $gifskiRes = "--width 1920";
     } elseif($resolution == "1280") {
         $resolution = "-vf scale=1280:-1";
-        $gifskiRes = "--width 1280 --height 720";
+        $gifskiRes = "--width 1280";
     } elseif($resolution == "854") {
         $resolution = "-vf scale=854:-1";
-        $gifskiRes = "--width 854 --height 480";
+        $gifskiRes = "--width 854";
     } elseif($resolution == "640") {
         $resolution = "-vf scale=640:-1";
-        $gifskiRes = "--width 640 --height 360";
+        $gifskiRes = "--width 640";
     } else {
         $resolution = "";
         $gifskiRes = "";
@@ -168,7 +168,7 @@
     #####################################################################################
     if($ext == "mp4") {
         if($trim == true) {
-            $trim = "-ss $timestamp_start_minute:$timestamp_start_second -t $timestamp_end_minute:$timestamp_end_second";
+            $trim = "-ss 00:$timestamp_start_minute:$timestamp_start_second -to 00:$timestamp_end_minute:$timestamp_end_second";
         } else {
             $trim = "";
         }
@@ -177,7 +177,11 @@
             exec("$ffmpeg -i temp/$folder/$filename $trim $resolution temp/$folder/sequence_%04d.png");
             exec("$gifski --quality 100 $gifskiRes $gifskiFPS $gifskiLoop -o temp/$folder/animated.gif temp/$folder/sequence_*.png");
         }  elseif($uploadType == "animated_webp" && $upload_options['animated_webp'] == "enabled") {
-            exec("$ffmpeg -i temp/$folder/$filename -c libwebp $trim $fps $resolution $webpLoop temp/$folder/animated.webp");
+            if($webp_encoder == "ffmpeg" && $libwebp == "enabled") {
+                exec("$ffmpeg -i temp/$folder/$filename $trim $fps $resolution $webpLoop -c libwebp temp/$folder/animated.webp");
+            } else {
+                exec("$ffmpeg -i temp/$folder/$filename $trim $fps $resolution $webpLoop temp/$folder/animated.webp");
+            }
         } elseif($uploadType == "animated_png" && $upload_options['animated_png'] == "enabled") {
             exec("$ffmpeg -i temp/$folder/$filename $trim $fps $resolution $apngLoop temp/$folder/animated.apng");
             
