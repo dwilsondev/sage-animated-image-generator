@@ -258,7 +258,7 @@
     if(!file_exists("temp/$folder/animated.gif") && !file_exists("temp/$folder/animated.webp") && !file_exists("temp/$folder/animated.png") && !file_exists("temp/$folder/animated.mp4")) {
         cleanUp($folder);
 
-        $data['error'] = "File uploaded was invalid. Could not generate animated image.";
+        $data['error'] = "Could not generate image or video.";
         echo json_encode($data);
         die();
     }
