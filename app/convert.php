@@ -17,52 +17,85 @@
     $timestamp_end = filter_input(INPUT_POST, 'timestamp_end', FILTER_SANITIZE_STRING);
 
     include "check_timestamps.php";
-
-    // Upload type error.
+    
+    // Upload option error.
     if(empty($uploadType) && $uploadType !== "animated_gifs" && $uploadType !== "animated_gifs_hq" && $uploadType !== "animated_webp" && $uploadType !== "animated_png" && $uploadType !== "animated_gifs_to_video") {
-        $data['error'] = "Bad upload type. Upload failed.";
+        $data['error'] = "Unsupported upload option. Upload failed.";
         echo json_encode($data);
         die();
     }
 
     #####################################################################################
     #
-    #   CHECK, MOVE, AND RENAME ALL UPLOAD FILE(s)
+    #   CHECK UPLOADED FILES FOR ERRORS
     #
     #####################################################################################
-    $folder = "temp_".uniqid();
-    mkdir("temp/".$folder);
-
-    foreach($_FILES as $file) {
-        if (!isset($file['error']) || is_array($file['error'])) {
-            $data['error'] = "There was an error with one of the files uploaded.";
+    foreach($_FILES as $key => $file) {
+        try {
+            if (isset($file['error']) && $file['error'] > 0) {
+              throw new RuntimeException('One or more of the files uploaded has problems and returned invalid parameters.');
+            }
+          
+            switch ($file['error']) {
+              case UPLOAD_ERR_OK:
+                break;
+              case UPLOAD_ERR_NO_FILE:
+                throw new RuntimeException('No files were received.');
+              case UPLOAD_ERR_INI_SIZE:
+              case UPLOAD_ERR_FORM_SIZE:
+                throw new RuntimeException('The files exceeded this Webserver\'s filesize limit.');
+              default:
+                throw new RuntimeException('Unknown error.');
+            }
+        } catch (RuntimeException $e) {
+            $data['error'] = $e->getMessage();
             echo json_encode($data);
             die();
         }
 
+        // Check file type. Remove and unset files that are not supported. 
         $file_ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-
-        if($rename_temp_files == true) {
-            $filename = uniqid().".".$file_ext;
-        } else {
-            $filename = $file['name'];
-        }
-        
         $mime = mime_content_type($file['tmp_name']);
-        $filesize = filesize($file['tmp_name']);
-        $filesize = round($filesize / 1024 / 1024, 1);
 
-        // Check type.
         if(!in_array($file_ext, $supported_filetypes) || (($file_ext !== "mp4" && $mime !== "video/mp4") && ($file_ext !== "png" && $mime !== "image/png") && ($file_ext !== "webp" && $mime !== "image/webp") && ($file_ext !== "jpeg" && $mime !== "image/jpg") && ($file_ext !== "jpg" && $mime !== "image/jpg") && ($file_ext !== "gif" && $mime !== "image/gif") && ($file_ext !== "zip" && $mime !== "application/zip"))) {
             unlink($file['tmp_name']);
+            unset($_FILES[$key]);
             continue;
         }
 
         // Check filesize.
+        $filesize = filesize($file['tmp_name']);
+        $filesize = round($filesize / 1024 / 1024, 1);
+
         if($filesize > $filesize_limit || $filesize <= 0) {
             $data['error'] = "One or more of the files are too big. Files should be less than $filesize_limit megs all together.";
             echo json_encode($data);
             die();
+        }
+    }
+
+    if(empty($_FILES)) {
+        $data['error'] = "None of the files uploaded are supported.";
+        echo json_encode($data);
+        die();
+    }
+
+    #####################################################################################
+    #
+    #   RENAME AND MOVE FILES
+    #
+    #####################################################################################
+    $folder = "temp_".uniqid();
+    mkdir("temp/".$folder);
+        
+    foreach($_FILES as $key => $file) {
+        $file_ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $mime = mime_content_type($file['tmp_name']);
+        
+        if($rename_temp_files == true) {
+            $filename = uniqid().".".$file_ext;
+        } else {
+            $filename = $file['name'];
         }
 
         // Move file.
@@ -86,7 +119,7 @@
 
     #####################################################################################
     #
-    #   SET OPTIONS
+    #   SET EXE ENV
     #
     #####################################################################################
     // ffmpeg exe
@@ -110,6 +143,11 @@
         $img2webp = "img2webp";
     }
 
+    #####################################################################################
+    #
+    #   SET CONVERSION OPTIONS
+    #
+    #####################################################################################
     // Loop option.
     if($loopOption == "true") {
         $loop = "-loop 0";

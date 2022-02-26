@@ -29,6 +29,7 @@ Load up the page in your Web browser and upload images or video to convert them 
 # Post Installation (optional)
 * If you're going to allow drag and drop, increase `max_file_uploads` in your php.ini. The default is 20.
 * You may want to increase `max_execution_time` in your `php.ini`. High quality gifs and animated PNGs can take a while to process depending on the upload options.
+* Increase `upload_max_filesize` in your php.ini to allow larger uploads.
 
 
 # High Quality GIFs (with gifski)
@@ -155,7 +156,7 @@ Set whether SAIG should rename files to random strings when uploaded prior to cr
 * libwebp ffmpeg encode will always loop.
 
 # Known Bugs
-* Having too few images will result in errors when generating high quality gifs.
+There are some unexplained errors when generating high quality gifs from images/zip of images that are not already sequentially named. It's recommended you generate image stills before uploading.
 
 # Created In
 * PHP
