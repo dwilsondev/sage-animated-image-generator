@@ -7,8 +7,8 @@
     // Enable or disable upload options.
     $upload_options = [
         "animated_gifs" => "enabled",
-        "animated_gifs_hq" => "enabled",
-        "animated_gifs_to_video" => "enabled",
+        "animated_gifs_hq" => "disabled",
+        "animated_gifs_to_video" => "disabled",
         "animated_webp" => "enabled",
         "animated_png" => "enabled",
     ];

@@ -157,7 +157,7 @@
 
         if ($uploadType == "animated_gifs_hq" && $upload_options['animated_gifs_hq'] == "enabled") {
             exec("$ffmpeg -i temp/$folder/$filename $trim temp/$folder/sequence_%04d.png");
-            exec("$gifski -o temp/$folder/animated.gif --fps $fps --repeat $loopOption temp/$folder/sequence_*.png");
+            exec("$gifski --quality 100 --fps $fps --repeat $loopOption -o temp/$folder/animated.gif temp/$folder/sequence_*.png");
         }  elseif($uploadType == "animated_webp" && $upload_options['animated_webp'] == "enabled") {
             exec("$ffmpeg -i temp/$folder/$filename -c libwebp $trim -vf fps=$fps -loop $webpLoopOption temp/$folder/animated.webp");
         } elseif($uploadType == "animated_png" && $upload_options['animated_png'] == "enabled") {
@@ -230,7 +230,7 @@
 
         // Create animated image from image sequence.
         if($uploadType == "animated_gifs_hq" && $upload_options['animated_gifs_hq'] == "enabled") {
-            exec("$gifski -o temp/$folder/animated.gif --fps $fps --repeat $loopOption temp/$folder/sequence_*.png");
+            exec("$gifski --quality 100 --fps $fps --repeat $loopOption -o temp/$folder/animated.gif temp/$folder/sequence_*.png");
         } elseif($uploadType == "animated_webp" && $upload_options['animated_webp'] == "enabled") {
             if($webp_encoder == "img2webp") {
                 exec("$img2webp -loop $webpLoopOption $img2webp_string -d 100 -o temp/$folder/animated.webp");
