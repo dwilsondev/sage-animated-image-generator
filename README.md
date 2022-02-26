@@ -30,7 +30,7 @@ Load up the page in your Web browser and upload images or video to convert them 
 
 
 # High Quality GIFs (with gifski)
-![hq_gif_example](https://cdn.drewilson.dev/public/for_github/up-for-amazing.gif)
+[example](https://cdn.drewilson.dev/public/for_github/up-for-amazing.gif)
 
 SAIG can generate high quality animated GIFs with the help of [gifski](https://gif.ski/). Simply download and place `gifski.exe` inside the app/bin folder.
 
