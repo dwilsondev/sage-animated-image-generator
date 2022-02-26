@@ -24,12 +24,14 @@ function generateImg(dNd = "") {
     let formData = new FormData(document.querySelector('#form'));
         let fileField = document.querySelector('#file');
         let uploadType = document.querySelector('#uploadType').value;
+        let resolution = document.querySelector('#resolution').value;
         let fps = document.querySelector('#fps').value;
         let loopOption = document.querySelector('#loopOption').checked;
         let timestamp_start = document.querySelector('#timestamp_start').value;
         let timestamp_end = document.querySelector('#timestamp_end').value;
     let url = 'app/convert.php'
     formData.append('uploadType', uploadType);
+    formData.append('resolution', resolution);
     formData.append('fps', fps);
     formData.append('loopOption', loopOption);
     formData.append('timestamp_start', timestamp_start);

@@ -105,14 +105,23 @@
                                         <?php endif; ?>
                                     </select>
 
+                                    <label>Resolution</label>
+                                    <select id="resolution">
+                                        <option value="auto" <?php if($default_resolution_option == "auto") { echo "selected"; } ?>>Auto</option>
+                                        <option value="1920" <?php if($default_resolution_option == 1080) { echo "selected"; } ?>>1080p</option>
+                                        <option value="1280" <?php if($default_resolution_option == 720) { echo "selected"; } ?>>720p</option>
+                                        <option value="854" <?php if($default_resolution_option == 480) { echo "selected"; } ?>>480p</option>
+                                        <option value="640" <?php if($default_resolution_option == 360) { echo "selected"; } ?>>360p</option>
+                                    </select>
+
                                     <label>Framerate</label>
                                     <select id="fps">
-                                        <option value="60" <?php if($default_fps == 60) { echo "selected"; } ?>>60fps</option>
-                                        <option value="50" <?php if($default_fps == 50) { echo "selected"; } ?>>50fps</option>
-                                        <option value="30" <?php if($default_fps == 30) { echo "selected"; } ?>>30fps</option>
-                                        <option value="25" <?php if($default_fps == 25) { echo "selected"; } ?>>25fps</option>
-                                        <option value="15" <?php if($default_fps == 15) { echo "selected"; } ?>>15fps</option>
-                                        <option value="1" <?php if($default_fps == 1) { echo "selected"; } ?>>1fps</option>
+                                        <option value="60" <?php if($default_fps_options == 60) { echo "selected"; } ?>>60fps</option>
+                                        <option value="50" <?php if($default_fps_options == 50) { echo "selected"; } ?>>50fps</option>
+                                        <option value="30" <?php if($default_fps_options == 30) { echo "selected"; } ?>>30fps</option>
+                                        <option value="25" <?php if($default_fps_options == 25) { echo "selected"; } ?>>25fps</option>
+                                        <option value="15" <?php if($default_fps_options == 15) { echo "selected"; } ?>>15fps</option>
+                                        <option value="1" <?php if($default_fps_options == 1) { echo "selected"; } ?>>1fps</option>
                                     </select>
 
                                     <?php if($video_timestamps == "enabled") : ?>
@@ -156,18 +165,9 @@ document.querySelector('#submit').style.cssText = "display: none";
 
 function loopCheck() {
     let uploadType = document.querySelector('#uploadType');
-    let fps = document.querySelector('#fps');
     let loopOption = document.querySelector('#loopOption');
 
-    if(uploadType.value == "animated_png") {
-        <?php if($apng_encoder !== "apngasm") : ?>
-        loopOption.checked = false;
-        loopOption.disabled = true;
-        <?php else : ?>
-        fps.value = 30;
-        fps.disabled = true;
-        <?php endif; ?>
-    } else if(uploadType.value == "animated_gifs_to_video") {
+    if(uploadType.value == "animated_gifs_to_video") {
         loopOption.checked = false;
         loopOption.disabled = true;
     } else {

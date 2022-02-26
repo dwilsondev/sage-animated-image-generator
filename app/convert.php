@@ -10,6 +10,7 @@
     #
     #####################################################################################
     $uploadType = filter_input(INPUT_POST, 'uploadType', FILTER_SANITIZE_STRING);
+    $resolution = filter_input(INPUT_POST, 'resolution', FILTER_SANITIZE_STRING);
     $fps = filter_input(INPUT_POST, 'fps', FILTER_SANITIZE_STRING);
     $loopOption = filter_input(INPUT_POST, 'loopOption', FILTER_SANITIZE_STRING);
     $timestamp_start = filter_input(INPUT_POST, 'timestamp_start', FILTER_SANITIZE_STRING);
@@ -109,27 +110,44 @@
         $img2webp = "img2webp";
     }
 
-    // apngasm exe
-    if($apngasm == "app" && file_exists("bin/apngasm.exe")) {
-        $apngasm = realpath("bin")."\\apngasm.exe";
-    } else {
-        $apngasm = "apngasm";
-    }
-
     // Loop option.
     if($loopOption == "true") {
-        $loopOption = 0;
-        $webpLoopOption = 65535;
-        $apngasmLoopOption = 0;
+        $loop = "-loop 0";
+        $webpLoop = "-loop 65535";
+        $apngLoop = "-plays 0";
+        $gifskiLoop = "--repeat 0";
     } else {
-        $loopOption = -1;
-        $webpLoopOption = 1;
-        $apngasmLoopOption = 1;
+        $loop = "-loop -1";
+        $webpLoop = "-loop 1";
+        $apngLoop = "-plays 1";
+        $gifskiLoop = "--repeat -1";
+    }
+
+    // Resolution option.
+    if($resolution == "1920") {
+        $resolution = "-vf scale=1920:-1";
+        $gifskiRes = "--width 1920 --height 1080";
+    } elseif($resolution == "1280") {
+        $resolution = "-vf scale=1280:-1";
+        $gifskiRes = "--width 1280 --height 720";
+    } elseif($resolution == "854") {
+        $resolution = "-vf scale=854:-1";
+        $gifskiRes = "--width 854 --height 480";
+    } elseif($resolution == "640") {
+        $resolution = "-vf scale=640:-1";
+        $gifskiRes = "--width 640 --height 360";
+    } else {
+        $resolution = "";
+        $gifskiRes = "";
     }
 
     // FPS option.
     if(!is_numeric($fps) || $fps < 0 || $fps > 60) {
-        $fps = 30;
+        $gifskiFPS = "--fps 30";
+        $fps = "-framerate 30";
+    } else {
+        $gifskiFPS = "--fps $fps";
+        $fps = "-framerate $fps";
     }
 
     // Final file extension.
@@ -156,21 +174,21 @@
         }
 
         if ($uploadType == "animated_gifs_hq" && $upload_options['animated_gifs_hq'] == "enabled") {
-            exec("$ffmpeg -i temp/$folder/$filename $trim temp/$folder/sequence_%04d.png");
-            exec("$gifski --quality 100 --fps $fps --repeat $loopOption -o temp/$folder/animated.gif temp/$folder/sequence_*.png");
+            exec("$ffmpeg -i temp/$folder/$filename $trim $resolution temp/$folder/sequence_%04d.png");
+            exec("$gifski --quality 100 $gifskiRes $gifskiFPS $gifskiLoop -o temp/$folder/animated.gif temp/$folder/sequence_*.png");
         }  elseif($uploadType == "animated_webp" && $upload_options['animated_webp'] == "enabled") {
-            exec("$ffmpeg -i temp/$folder/$filename -c libwebp $trim -vf fps=$fps -loop $webpLoopOption temp/$folder/animated.webp");
+            exec("$ffmpeg -i temp/$folder/$filename -c libwebp $trim $fps $resolution $webpLoop temp/$folder/animated.webp");
         } elseif($uploadType == "animated_png" && $upload_options['animated_png'] == "enabled") {
-            exec("$ffmpeg -i temp/$folder/$filename $trim -vf fps=$fps temp/$folder/animated.apng");
+            exec("$ffmpeg -i temp/$folder/$filename $trim $fps $resolution $apngLoop temp/$folder/animated.apng");
             
             rename("temp/$folder/animated.apng", "temp/$folder/animated.png");
         } elseif($upload_options['animated_gifs'] == "enabled") {
-            exec("$ffmpeg -i temp/$folder/$filename $trim -vf fps=$fps -loop $loopOption temp/$folder/animated.gif");
+            exec("$ffmpeg -i temp/$folder/$filename $trim $fps $resolution $loop temp/$folder/animated.gif");
         }         
     }
 
     if($ext == "gif" && $uploadType == "animated_gifs_to_video" && $upload_options['animated_gifs_to_video'] == "enabled") {
-        exec("$ffmpeg -framerate $fps -i temp/$folder/$filename temp/$folder/animated.mp4");      
+        exec("$ffmpeg $fps -i temp/$folder/$filename temp/$folder/animated.mp4");      
     } elseif($ext !== "gif" && $uploadType == "animated_gifs_to_video" && $upload_options['animated_gifs_to_video'] == "enabled") {
         $data['error'] = "Upload an animated GIF to make a video.";
         echo json_encode($data);
@@ -187,7 +205,7 @@
             // Extract ZIP file.
             $zip = new ZipArchive();
 
-            if ($zip->open("temp/$folder/$filename.zip") == true) {
+            if ($zip->open("temp/$folder/$filename") == true) {
                 $zip->extractTo("temp/$folder");
                 $zip->close();
             } else {
@@ -230,23 +248,19 @@
 
         // Create animated image from image sequence.
         if($uploadType == "animated_gifs_hq" && $upload_options['animated_gifs_hq'] == "enabled") {
-            exec("$gifski --quality 100 --fps $fps --repeat $loopOption -o temp/$folder/animated.gif temp/$folder/sequence_*.png");
+            exec("$gifski --quality 100 $gifskiRes $gifskiFPS $gifskiLoop -o temp/$folder/animated.gif temp/$folder/sequence_*.png");
         } elseif($uploadType == "animated_webp" && $upload_options['animated_webp'] == "enabled") {
             if($webp_encoder == "img2webp") {
-                exec("$img2webp -loop $webpLoopOption $img2webp_string -d 100 -o temp/$folder/animated.webp");
+                exec("$img2webp $webpLoop $img2webp_string -d 100 -o temp/$folder/animated.webp");
             } else {
-                exec("$ffmpeg -framerate $fps -i temp/$folder/sequence_%d.png -c libwebp -loop $webpLoopOption temp/$folder/animated.webp");
+                exec("$ffmpeg $fps -i temp/$folder/sequence_%d.png $resolution $webpLoop -c libwebp temp/$folder/animated.webp");
             }
         } elseif($uploadType == "animated_png" && $upload_options['animated_png'] == "enabled") {
-            if($apng_encoder == "apngasm") {
-                exec("$apngasm temp/$folder/animated.png temp/$folder/sequence_*.png -l$apngasmLoopOption -kp -kc");
-            } else {
-                exec("$ffmpeg -framerate $fps -i temp/$folder/sequence_%d.png -loop $loopOption temp/$folder/animated.apng");
-                
-                rename("temp/$folder/animated.apng", "temp/$folder/animated.png");
-            }
+            exec("$ffmpeg $fps -i temp/$folder/sequence_%d.png $resolution $apngLoop temp/$folder/animated.apng");
+            
+            rename("temp/$folder/animated.apng", "temp/$folder/animated.png");
         } elseif($uploadType == "animated_gifs" && $upload_options['animated_gifs'] == "enabled") {
-            exec("$ffmpeg -framerate $fps -i temp/$folder/sequence_%d.png -loop $loopOption temp/$folder/animated.gif");
+            exec("$ffmpeg $fps -i temp/$folder/sequence_%d.png $resolution $loop  temp/$folder/animated.gif");
         } 
     }
 
@@ -277,7 +291,7 @@
     
         foreach ($files as $file) {
             if($file !== "animated.mp4" && $file !== "animated.gif" && $file !== "animated.png" && $file !== "animated.webp") {
-                unlink("temp/$folder/$file");
+                //unlink("temp/$folder/$file");
             }
         }
     }
