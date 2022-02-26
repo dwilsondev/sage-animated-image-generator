@@ -53,12 +53,12 @@
     $webp_encoder = "ffmpeg";
     $libwebp = "disabled";
 
-    // Enable or disable timestamps. Used for trimming video uploads.
+    // Enable or disable video timestamps. Used for trimming video uploads.
     // This feature is experimental. And while it works, it's not been 
     // thoroughly tested.
     $video_timestamps = "disabled";
 
-    // AIG renames all uploaded files to random names for security prior
+    // AIG renames all uploaded files for security prior
     // to making animation frames. Setting to false disables this and may allow for 
     // better animation results.
     $rename_temp_files = true;
