@@ -4,11 +4,16 @@ function generateImg(dNd = "") {
         CLEAR MESSAGES
 
     */
+    let upload = document.querySelector('.upload');
     let download = document.querySelector("#download");
+    let wait = document.querySelector(".wait");
+    let preview = document.querySelector("#image_preview");
+    let preview_image = document.querySelector("#image_preview_image");
+    let submit = document.querySelector('#submit');
     let errors = document.querySelector("#errors");
     
-
     download.style.cssText = "display: none";
+    preview.style.cssText = "display: none";  
     errors.style.cssText = "display: none";  
 
     /*
@@ -32,39 +37,34 @@ function generateImg(dNd = "") {
 
     /*
 
-        CHECK TIMESTAMPS
+        CHECK INPUTS
 
     */
-    if(timestamp_start !== "" && /[0-9:]+/g.test(timestamp_start) == false) {
-        alert("Bad start timestamp.");
+    if(fps <= 0 || fps > 60) {
+        errors.innerHTML = "Framerate should be between 1 and 60. (JS)";
         return false;
     }
 
-    if(timestamp_end !== "" && /[0-9:]+/g.test(timestamp_end) == false) {
-        alert("Bad end timestamp.");
+    if(timestamp_start !== "" && /[0-9:]+/g.test(timestamp_start) === false) {
+        errors.innerHTML = "Bad start timestamp. (JS)";
         return false;
     }
-    
+
+    if(timestamp_end !== "" && /[0-9:]+/g.test(timestamp_end) === false) {
+        errors.innerHTML = "Bad end timestamp. (JS)";
+        return false;
+    }
+
     /*
 
         CHECK FOR FILES
 
     */
-    if(!fileField.files[0] && !dNd) {
+   // If no files upload from file input or drag n drop, tell user to upload file.
+    if(!fileField.files && !dNd) {
         errors.style.cssText = "display: block";
-        errors.innerHTML = "Please choose a support file to upload.";
+        errors.innerHTML = "Please choose a file to upload. (JS)";
         return;
-    }
-
-    /*
-
-        OLD FASHIONED UPLOAD
-
-    */
-    // If file was uploaded the old fashioned way, get file from selector.
-    // else get from drag and drop data transfer.            
-    if(fileField.files[0] !== undefined) {
-        formData.append('file_0', fileField.files[0]);
     }
 
     /*
@@ -72,18 +72,25 @@ function generateImg(dNd = "") {
         DRAG N DROP
 
     */
+    // If files were uploaded via drag and drop, add them to form data array.
     if(dNd) {
         dNd.preventDefault();
 
         if (dNd.dataTransfer.files) {
             for (var i = 0; i < dNd.dataTransfer.files.length; i++) {
                 formData.append('file_'+i, dNd.dataTransfer.files[i]);
-                //previewImage(dNd.dataTransfer.files[i]);
             }
         } else {
-            alert("There was a problem adding files.");
+            errors.innerHTML = "There was a problem adding files. (JS)";
             return;
         }
+    } else if(fileField.files[0] !== undefined) {
+
+        formData.append('file_0', fileField.files[0]);
+
+    } else {
+        errors.innerHTML = "There was a problem uploading file. (JS)";
+        return;
     }
 
     /*
@@ -92,9 +99,10 @@ function generateImg(dNd = "") {
 
     */
    if(fileField.files[0] !== undefined || dNd.dataTransfer.files[0] !== undefined) {
-        document.querySelector('.upload').style.cssText = "display: none";
-        document.querySelector('#submit').style.cssText = "display: none";
-        document.querySelector('.wait').style.cssText = "display: block";
+        upload.style.cssText = "display: none";
+        submit.style.cssText = "display: none";
+        preview.style.cssText = "display: none";
+        wait.style.cssText = "display: block";
 
         fetch(url, {
             method: 'POST',
@@ -107,26 +115,26 @@ function generateImg(dNd = "") {
                 if(result['link']) {
                     download.href = result['link'];
                     download.style.cssText = "display: block";
-                    document.querySelector("#image_preview_image").src = result['link'];
+                    
+                    preview_image.src = result['link'];
+                    preview.style.cssText = "display: block";
                 } else if(result['error']) {
                     // Errors were found, display error message.
-                    errors.style.cssText = "display: block";
                     errors.innerHTML = result['error'];
+                    errors.style.cssText = "display: block";
                 } else {
                     // Unknown error.
-                    errors.style.cssText = "display: block";
                     errors.innerHTML = "There was a problem uploading file.";
+                    errors.style.cssText = "display: block";
                 }
 
-                // Show preview image. Reset hide upload message message and show submit button.
-                document.querySelector('#image_preview').style.cssText = "display: block";
-                document.querySelector('.upload').style.cssText = "display: block";
-
-                if(manuel_submit == true) {
-                    document.querySelector('#submit').style.cssText = "display: block";
-                }
+                // Show upload button, hide wait message, and show submit button.
+                upload.style.cssText = "display: block";
+                wait.style.cssText = "display: none";
                 
-                document.querySelector('.wait').style.cssText = "display: none";
+                if(manuel_submit === true) {
+                    submit.style.cssText = "display: block";
+                }
             })
     }
 }

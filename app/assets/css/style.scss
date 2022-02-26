@@ -52,10 +52,6 @@ label span {
     font-size: 1rem;
 }
 
-::placeholder {
-    color: rgb(170, 170, 170);
-}
-
 select {
     width: 100%;
     background-color: #4b8061;
@@ -92,6 +88,10 @@ option {
     background-color: #5ba379;
 }
 
+::placeholder {
+    color: rgb(170, 170, 170);
+}
+
 .content {
     width: 85%;
     margin: auto;
@@ -123,7 +123,6 @@ header {
 main {
     min-height: 70vh;
     padding-top: 2%;
-    padding-bottom: 2%;
 
     #no-ffmpeg h2 {
         text-align: center;
@@ -206,8 +205,7 @@ footer {
         }
 
         .inner {
-            cursor: pointer;
-            
+            cursor: pointer;  
         }
 
         input[type=file] {
@@ -217,18 +215,9 @@ footer {
             font-size: 1.5rem;
             display: none;
         }
-
-        #image_preview {
-            margin: auto;
-            margin-bottom: 30px;
-            display: none;
-
-            img {
-                max-width: 50%;
-                max-height: 400px;
-                margin: auto;
-                display: block;
-            }
+        
+        #upload_area .inner:hover {
+            background-color: #464646;
         }
 
         #upload_img {
@@ -239,10 +228,21 @@ footer {
             width: 52%;
             cursor: pointer;
         }
-    }
 
-    .upload:hover {
-        background-color: #464646;
+        #image_preview {
+            margin: auto;
+            display: none;
+            
+            .inner {
+                background-color: #2f5836;
+            }
+
+            img {
+                max-width: 100%;
+                margin: auto;
+                display: block;
+            }
+        }
     }
 
     .wait {
@@ -311,6 +311,12 @@ footer {
 
     main {
         padding-top: 3%;
+
+        #download {
+            width: 94%;
+            padding: 2%;
+            font-size: 2.5rem;
+        }
     }
 
     .convert-sections {

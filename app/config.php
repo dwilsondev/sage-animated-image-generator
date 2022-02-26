@@ -10,26 +10,24 @@
         "animated_gifs_hq" => "enabled",
         "animated_gifs_to_video" => "enabled",
         "animated_webp" => "enabled",
-        "animated_apng" => "enabled",
+        "animated_png" => "enabled",
     ];
 
     // Set the default convert option for Web UI.
-    // Set to either "animated_gifs", "animated_gifs_hq"
+    // Set to either "animated_gifs", "animated_gifs_hq", "animated_gifs_to_video"
+    // "animated_webp", and "animated_png"
     $default_convert_option = "animated_gifs";
 
     // Set default FPS option for Web UI.
     // Set to 1, 15, 25, 30, 50, 60. Note, you can add additional options
     // in the form. Max fps is 60.
-    $default_fps = 10;
-
-    // If set to disabled, images will be set to loop infinitely.
-    $loop_option = "enabled";
+    $default_fps = 30;
 
     // Set whether loop option is checked or unchecked by default.
     $loop_infinite_checked = true;
 
     // Sets file size limit in megabytes.
-    $filesize_limit = 30;
+    $filesize_limit = 10;
 
     // Enable or disable drag n drop upload and auto submit functions.
     // auto submit is for manuel uploads. drag and drop will always auto submit.
@@ -43,7 +41,7 @@
     // gifski -- is required for high quality Gifs.
     // 
     // Set to these options to "app" to load from them from app/bin, set to empty 
-    // to use system installed binary.
+    // to use binary added to your system path.
     $ffmpeg = "app";
     $img2webp = "app";
     $apngasm = "app";
@@ -56,4 +54,11 @@
     $apng_encoder = "ffmpeg";
 
     // Enable or disable timestamps. Used for trimming video uploads.
+    // This feature is experimental. And while it works, it's not been 
+    // thoroughly tested.
     $video_timestamps = "disabled";
+
+    // AIG renames all uploaded files to random names for security prior
+    // to making animation frames. Setting to false disables this and may allow for 
+    // better animation results.
+    $rename_temp_files = true;

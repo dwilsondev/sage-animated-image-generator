@@ -50,19 +50,23 @@
                                 <div id="image_preview">
                                     <h2>Preview</h2>
                                     
-                                    <img id="image_preview_image" src="" alt="animated image preview">        
+                                    <div class="inner">
+                                        <img id="image_preview_image" src="" alt="animated image preview">     
+                                    </div>   
                                 </div>
 
-                                <h2>Upload File</h2>
+                                <div id="upload_area">
+                                    <h2>Upload File</h2>
 
-                                <div class="inner">
-                                    <label id="drop_zone" <?php if($drag_n_drop == true) : ?>ondrop="generateImg(event);"  ondragover="dragOverHandler(event);" <?php endif; ?> for="file">
-                                        <img id="upload_img" src="app/assets/img/upload.png" alt="upload button image">      
-                                    </label>
+                                    <div class="inner">
+                                        <label id="drop_zone" <?php if($drag_n_drop == true) : ?>ondrop="generateImg(event);"  ondragover="dragOverHandler(event);" <?php endif; ?> for="file">
+                                            <img id="upload_img" src="app/assets/img/upload.png" alt="upload button image">      
+                                        </label>
 
-                                    <input id="file" type="file" required <?php if($auto_submit == true) : ?>onchange="generateImg();"<?php endif; ?> required>
-                                    
-                                    <p class="directions"><?php if($drag_n_drop == true) : ?>Drag N drop images or click to upload. <br><?php endif; ?></p>
+                                        <input id="file" type="file" required <?php if($auto_submit == true) : ?>onchange="generateImg();"<?php endif; ?> required>
+                                        
+                                        <p class="directions"><?php if($drag_n_drop == true) : ?>Drag N drop images or click to upload. <br><?php endif; ?></p>
+                                    </div>
                                 </div>
                             </div>
 
@@ -81,23 +85,23 @@
                                     <label>Convert Type</label>
                                     <select id="uploadType" onchange="loopCheck();">
                                         <?php if($upload_options['animated_gifs'] == "enabled") : ?>
-                                        <option value="gif" <?php if($default_convert_option == "animated_gifs") { echo "selected"; } ?>>Animated GIF</option>
+                                        <option value="animated_gifs" <?php if($default_convert_option == "animated_gifs") { echo "selected"; } ?>>Animated GIF</option>
                                         <?php endif; ?>
 
                                         <?php if($upload_options['animated_gifs_hq'] == "enabled") : ?>
-                                        <option value="gif-hd" <?php if($default_convert_option == "animated_gifs_hq") { echo "selected"; } ?>>Animated GIF (High Quality)</option>
+                                        <option value="animated_gifs_hq" <?php if($default_convert_option == "animated_gifs_hq") { echo "selected"; } ?>>Animated GIF (High Quality)</option>
                                         <?php endif; ?>
 
                                         <?php if($upload_options['animated_gifs_to_video'] == "enabled") : ?>
-                                        <option value="video" <?php if($default_convert_option == "animated_gifs_to_video") { echo "selected"; } ?>>Animated GIF To Video</option>
+                                        <option value="animated_gifs_to_video" <?php if($default_convert_option == "animated_gifs_to_video") { echo "selected"; } ?>>Animated GIF To Video</option>
                                         <?php endif; ?>
 
                                         <?php if($upload_options['animated_webp'] == "enabled") : ?>
-                                        <option value="webp" <?php if($default_convert_option == "animated_webp") { echo "selected"; } ?>>Animated WebP</option>
+                                        <option value="animated_webp" <?php if($default_convert_option == "animated_webp") { echo "selected"; } ?>>Animated WebP</option>
                                         <?php endif; ?>
 
-                                        <?php if($upload_options['animated_apng'] == "enabled") : ?>
-                                        <option value="apng" <?php if($default_convert_option == "animated_apng") { echo "selected"; } ?>>Animated PNG</option>
+                                        <?php if($upload_options['animated_png'] == "enabled") : ?>
+                                        <option value="animated_png" <?php if($default_convert_option == "animated_apng") { echo "selected"; } ?>>Animated PNG</option>
                                         <?php endif; ?>
                                     </select>
 
@@ -155,7 +159,7 @@ function loopCheck() {
     let fps = document.querySelector('#fps');
     let loopOption = document.querySelector('#loopOption');
 
-    if(uploadType.value == "apng") {
+    if(uploadType.value == "animated_png") {
         <?php if($apng_encoder !== "apngasm") : ?>
         loopOption.checked = false;
         loopOption.disabled = true;
@@ -163,7 +167,7 @@ function loopCheck() {
         fps.value = 30;
         fps.disabled = true;
         <?php endif; ?>
-    } else if(uploadType.value == "video") {
+    } else if(uploadType.value == "animated_gifs_to_video") {
         loopOption.checked = false;
         loopOption.disabled = true;
     } else {

@@ -51,22 +51,6 @@ label span {
   font-size: 1rem;
 }
 
-::-webkit-input-placeholder {
-  color: #aaaaaa;
-}
-
-:-ms-input-placeholder {
-  color: #aaaaaa;
-}
-
-::-ms-input-placeholder {
-  color: #aaaaaa;
-}
-
-::placeholder {
-  color: #aaaaaa;
-}
-
 select {
   width: 100%;
   background-color: #4b8061;
@@ -103,6 +87,22 @@ option {
   background-color: #5ba379;
 }
 
+::-webkit-input-placeholder {
+  color: #aaaaaa;
+}
+
+:-ms-input-placeholder {
+  color: #aaaaaa;
+}
+
+::-ms-input-placeholder {
+  color: #aaaaaa;
+}
+
+::placeholder {
+  color: #aaaaaa;
+}
+
 .content {
   width: 85%;
   margin: auto;
@@ -134,7 +134,6 @@ header h1 span {
 main {
   min-height: 70vh;
   padding-top: 2%;
-  padding-bottom: 2%;
 }
 
 main #no-ffmpeg h2 {
@@ -239,17 +238,8 @@ footer p {
   display: none;
 }
 
-.convert-sections .upload #image_preview {
-  margin: auto;
-  margin-bottom: 30px;
-  display: none;
-}
-
-.convert-sections .upload #image_preview img {
-  max-width: 50%;
-  max-height: 400px;
-  margin: auto;
-  display: block;
+.convert-sections .upload #upload_area .inner:hover {
+  background-color: #464646;
 }
 
 .convert-sections .upload #upload_img {
@@ -261,8 +251,19 @@ footer p {
   cursor: pointer;
 }
 
-.convert-sections .upload:hover {
-  background-color: #464646;
+.convert-sections .upload #image_preview {
+  margin: auto;
+  display: none;
+}
+
+.convert-sections .upload #image_preview .inner {
+  background-color: #2f5836;
+}
+
+.convert-sections .upload #image_preview img {
+  max-width: 100%;
+  margin: auto;
+  display: block;
 }
 
 .convert-sections .wait {
@@ -330,6 +331,11 @@ footer p {
   }
   main {
     padding-top: 3%;
+  }
+  main #download {
+    width: 94%;
+    padding: 2%;
+    font-size: 2.5rem;
   }
   .convert-sections {
     -webkit-box-orient: vertical;

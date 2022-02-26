@@ -15,49 +15,10 @@
     $timestamp_start = filter_input(INPUT_POST, 'timestamp_start', FILTER_SANITIZE_STRING);
     $timestamp_end = filter_input(INPUT_POST, 'timestamp_end', FILTER_SANITIZE_STRING);
 
-    // Check timestamp
-    if(!empty($timestamp_start) && !empty($timestamp_end)) {
-        $start = explode(":", $timestamp_start);
-        $end = explode(":", $timestamp_end);
-
-        // There must be a minute and second timecode.
-        if(isset($start[0]) && isset($start[1]) && isset($end[0]) && isset($end[1])) {
-            $m = $start[0];
-            $s = $start[1];
-
-            if(($s < 0 || $s > 60) || ($m < 0 || $m > 1) || ((empty($s) && empty($m)))) {
-                $data['error'] = "Bad start timestamp, try again.";
-                echo json_encode($data);
-                die();
-            } else {
-                $timestamp_start_minute = $m;
-                $timestamp_start_second = $s;
-            }
-
-            $m = $end[0];
-            $s = $end[1];
-
-            if(($s < 0 || $s > 60) || ($m < 0 || $m > 1) || ((empty($s) && empty($m)))) {
-                $data['error'] = "Bad end timestamp, try again.";
-                echo json_encode($data);
-                die();
-            } else {
-                $timestamp_end_minute = $m;
-                $timestamp_end_second = $s;
-            }
-
-            $trim = true;
-        } else {
-            $data['error'] = "Bad timestamp, try again.";
-            echo json_encode($data);
-            die();
-        }   
-    } else {
-        $trim = false;
-    }
+    include "check_timestamps.php";
 
     // Upload type error.
-    if(empty($uploadType) && $uploadType !== "gif" && $uploadType !== "gif-hd" && $uploadType !== "webp" && $uploadType !== "apng" && $uploadType !== "video") {
+    if(empty($uploadType) && $uploadType !== "animated_gifs" && $uploadType !== "animated_gifs_hq" && $uploadType !== "animated_webp" && $uploadType !== "animated_png" && $uploadType !== "animated_gifs_to_video") {
         $data['error'] = "Bad upload type. Upload failed.";
         echo json_encode($data);
         die();
@@ -72,14 +33,20 @@
     mkdir("temp/".$folder);
 
     foreach($_FILES as $file) {
-        if (!isset($files['error']) || is_array($files['error'])) {
+        if (!isset($file['error']) || is_array($file['error'])) {
             $data['error'] = "There was an error with one of the files uploaded.";
             echo json_encode($data);
             die();
         }
 
-        $filename = uniqid();
         $file_ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+        if($rename_temp_files == true) {
+            $filename = uniqid().".".$file_ext;
+        } else {
+            $filename = $file['name'];
+        }
+        
         $mime = mime_content_type($file['tmp_name']);
         $filesize = filesize($file['tmp_name']);
         $filesize = round($filesize / 1024 / 1024, 1);
@@ -98,13 +65,13 @@
         }
 
         // Move file.
-        if (!move_uploaded_file($file['tmp_name'], sprintf("%s.%s", "temp"."/".$folder."/".$filename, $file_ext))) {
+        if(!move_uploaded_file($file['tmp_name'], "temp"."/".$folder."/".$filename)) {
             cleanUp($folder);
 
             $data['error'] = "Failed to move some files. Can't continue.";
             echo json_encode($data);
-            die();
-        }       
+            die();                
+        }   
     }
 
     // If uploading one file, set single file extension and set multi_upload to false.
@@ -166,11 +133,11 @@
     }
 
     // Final file extension.
-    if($uploadType == "apng") {
+    if($uploadType == "animated_png") {
         $ext_final = "png";
-    } elseif($uploadType == "webp") {
+    } elseif($uploadType == "animated_webp") {
         $ext_final = "webp";
-    } elseif($uploadType == "video") {
+    } elseif($uploadType == "animated_gifs_to_video") {
         $ext_final = "mp4";
     }  else {
         $ext_final = "gif";
@@ -188,23 +155,23 @@
             $trim = "";
         }
 
-        if ($uploadType == "gif-hd" && $upload_options['animated_gifs_hq'] == "enabled") {
-            exec("$ffmpeg -i temp/$folder/$filename.mp4 $trim temp/$folder/sequence_%04d.png");
+        if ($uploadType == "animated_gifs_hq" && $upload_options['animated_gifs_hq'] == "enabled") {
+            exec("$ffmpeg -i temp/$folder/$filename $trim temp/$folder/sequence_%04d.png");
             exec("$gifski -o temp/$folder/animated.gif --fps $fps --repeat $loopOption temp/$folder/sequence_*.png");
-        }  elseif($uploadType == "webp" && $upload_options['animated_webp'] == "enabled") {
-            exec("$ffmpeg -i temp/$folder/$filename.mp4 -c libwebp $trim -vf fps=$fps -loop $webpLoopOption temp/$folder/animated.webp");
-        } elseif($uploadType == "apng" && $upload_options['animated_apng'] == "enabled") {
-            exec("$ffmpeg -i temp/$folder/$filename.mp4 $trim -vf fps=$fps temp/$folder/animated.apng");
+        }  elseif($uploadType == "animated_webp" && $upload_options['animated_webp'] == "enabled") {
+            exec("$ffmpeg -i temp/$folder/$filename -c libwebp $trim -vf fps=$fps -loop $webpLoopOption temp/$folder/animated.webp");
+        } elseif($uploadType == "animated_png" && $upload_options['animated_png'] == "enabled") {
+            exec("$ffmpeg -i temp/$folder/$filename $trim -vf fps=$fps temp/$folder/animated.apng");
             
             rename("temp/$folder/animated.apng", "temp/$folder/animated.png");
         } elseif($upload_options['animated_gifs'] == "enabled") {
-            exec("$ffmpeg -i temp/$folder/$filename.mp4 $trim -vf fps=$fps -loop $loopOption temp/$folder/animated.gif");
+            exec("$ffmpeg -i temp/$folder/$filename $trim -vf fps=$fps -loop $loopOption temp/$folder/animated.gif");
         }         
     }
 
-    if($ext == "gif" && $uploadType == "video" && $upload_options['animated_gifs_to_video'] == "enabled") {
-        exec("$ffmpeg -framerate $fps -i temp/$folder/$filename.gif temp/$folder/animated.mp4");      
-    } elseif($uploadType == "video" && $ext !== "gif" && $upload_options['animated_gifs'] == "enabled") {
+    if($ext == "gif" && $uploadType == "animated_gifs_to_video" && $upload_options['animated_gifs_to_video'] == "enabled") {
+        exec("$ffmpeg -framerate $fps -i temp/$folder/$filename temp/$folder/animated.mp4");      
+    } elseif($ext !== "gif" && $uploadType == "animated_gifs_to_video" && $upload_options['animated_gifs_to_video'] == "enabled") {
         $data['error'] = "Upload an animated GIF to make a video.";
         echo json_encode($data);
         die();
@@ -234,6 +201,8 @@
         unset($files[0]);
         unset($files[1]);
 
+        natsort($files);
+
         // Create image sequence find all PNG and JPEG images.
         // Convert JPEGs to PNG and rename all PNGs. Create Webp string for img2webp encoding.
         $itr = 0;
@@ -255,25 +224,20 @@
                 }  
 
                 $img2webp_string .= " temp/$folder/sequence_$itr.png";  
-
                 $itr = $itr + 1;
-
             }
         }
 
         // Create animated image from image sequence.
-        if($uploadType == "gif-hd" && $upload_options['animated_gifs_hq'] == "enabled") {
+        if($uploadType == "animated_gifs_hq" && $upload_options['animated_gifs_hq'] == "enabled") {
             exec("$gifski -o temp/$folder/animated.gif --fps $fps --repeat $loopOption temp/$folder/sequence_*.png");
-        } elseif($uploadType == "webp" && $upload_options['animated_webp'] == "enabled") {
-
+        } elseif($uploadType == "animated_webp" && $upload_options['animated_webp'] == "enabled") {
             if($webp_encoder == "img2webp") {
                 exec("$img2webp -loop $webpLoopOption $img2webp_string -d 100 -o temp/$folder/animated.webp");
             } else {
                 exec("$ffmpeg -framerate $fps -i temp/$folder/sequence_%d.png -c libwebp -loop $webpLoopOption temp/$folder/animated.webp");
             }
-            
-        } elseif($uploadType == "apng" && $upload_options['animated_apng'] == "enabled") {
-
+        } elseif($uploadType == "animated_png" && $upload_options['animated_png'] == "enabled") {
             if($apng_encoder == "apngasm") {
                 exec("$apngasm temp/$folder/animated.png temp/$folder/sequence_*.png -l$apngasmLoopOption -kp -kc");
             } else {
@@ -281,8 +245,7 @@
                 
                 rename("temp/$folder/animated.apng", "temp/$folder/animated.png");
             }
-
-        } elseif($uploadType !== "video" && $upload_options['animated_gifs'] == "enabled") {
+        } elseif($uploadType == "animated_gifs" && $upload_options['animated_gifs'] == "enabled") {
             exec("$ffmpeg -framerate $fps -i temp/$folder/sequence_%d.png -loop $loopOption temp/$folder/animated.gif");
         } 
     }
