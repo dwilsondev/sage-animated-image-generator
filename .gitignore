@@ -2,3 +2,4 @@
 *.exe
 .zip
 /Zold
+app/clean.php

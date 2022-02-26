@@ -1,6 +1,6 @@
 <?php
 
-$temp = "temp";
+$temp = realpath("temp");
 
 $temp_folders = scandir($temp);
 unset($temp_folders[0]);
