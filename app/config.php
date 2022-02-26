@@ -4,7 +4,8 @@
     // defaults - ['mp4', 'png', 'jpeg', 'jpg', 'webp', 'gif', 'zip']
     $supported_filetypes = ['mp4', 'png', 'jpeg', 'jpg', 'webp', 'gif', 'zip'];
 
-    // Enable or disable upload options.
+    // Enable or disable upload options. Disabling will hide them from Web UI
+    // and disable the conversions.
     $upload_options = [
         "animated_gifs" => "enabled",
         "animated_gifs_hq" => "enabled",
@@ -18,13 +19,11 @@
     // "animated_webp", and "animated_png"
     $default_convert_option = "animated_gifs";
 
-    // Set scale of animation output. Set to "auto" for no change in res.
-    // Or set to 1080, 720, 480, or 360.
+    // Set default resolution for Web UI. Se to "auto", "1080", "720", "480", or "360".
     $default_resolution_option = "auto";
 
     // Set default FPS option for Web UI.
-    // Set to 1, 15, 25, 30, 50, 60. Note, you can add additional options
-    // in the form. Max fps is 60.
+    // Set to 1, 15, 25, 30, 50, 60.
     $default_fps_options = 30;
 
     // Set whether loop option is checked or unchecked by default.
@@ -36,7 +35,7 @@
     // Enable or disable drag n drop upload and auto submit functions.
     // auto submit is for manuel uploads. drag and drop will always auto submit.
     $drag_n_drop = true;
-    $auto_submit = false; // Displays a submit button if set to false.
+    $auto_submit = true; // Displays a submit button if set to false.
 
     // Set binary environments. 
     // ffmpeg -- is required for all standard conversions except high quality gifs.
@@ -57,7 +56,7 @@
     // Enable or disable timestamps. Used for trimming video uploads.
     // This feature is experimental. And while it works, it's not been 
     // thoroughly tested.
-    $video_timestamps = "enabled";
+    $video_timestamps = "disabled";
 
     // AIG renames all uploaded files to random names for security prior
     // to making animation frames. Setting to false disables this and may allow for 
