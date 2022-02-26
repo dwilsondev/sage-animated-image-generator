@@ -206,7 +206,6 @@
     #####################################################################################
     if($ext == "zip" || $multi_upload == true) {
         if ($ext == "zip") {
-            // Extract ZIP file.
             $zip = new ZipArchive();
 
             if ($zip->open("temp/$folder/$filename") == true) {
