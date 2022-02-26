@@ -47,12 +47,12 @@ function generateImg(dNd = "") {
         return false;
     }
 
-    if(timestamp_start !== "" && /[0-9:]+/g.test(timestamp_start) === false) {
+    if(timestamp_start !== "" && /[0-9:.]+/g.test(timestamp_start) === false) {
         errors.innerHTML = "Bad start timestamp. (JS)";
         return false;
     }
 
-    if(timestamp_end !== "" && /[0-9:]+/g.test(timestamp_end) === false) {
+    if(timestamp_end !== "" && /[0-9:.]+/g.test(timestamp_end) === false) {
         errors.innerHTML = "Bad end timestamp. (JS)";
         return false;
     }

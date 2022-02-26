@@ -10,7 +10,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Animated Image Generator</title>
+        <title>Sage Animated Image Generator</title>
 
         <link rel="stylesheet" href="app/assets/css/style.css">
         <script src="app/assets/js/app.js"></script>
@@ -30,7 +30,7 @@
     </head>
     <body>
         <header>
-            <h1><a href="./">Animated Image Generator <span>v1.0</span></a></h1>
+            <h1><a href="./">Sage Animated Image Generator <span>v1.0</span></a></h1>
         </header>
 
         <main>
@@ -136,7 +136,7 @@
                                     <?php endif; ?>
 
                                     <label>Loop Infinitely?</label>
-                                    <input id="loopOption" type="checkbox" <?php if($loop_infinite_checked == true) { echo "checked"; } ?>>
+                                    <input id="loopOption" type="checkbox" <?php if($default_loop_option == "checked") { echo "checked"; } ?>>
 
                                     <span id="submit" onclick="generateImg();">Generate</span>
                                 </div>
@@ -171,6 +171,7 @@ libwebp = "disabled";
 
 function loopCheck() {
     let uploadType = document.querySelector('#uploadType');
+    let fps_option = document.querySelector('#fps option');
     let loopOption = document.querySelector('#loopOption');
 
     if(uploadType.value == "animated_gifs_to_video") {
@@ -179,6 +180,10 @@ function loopCheck() {
     } else if(uploadType.value == "animated_webp" && libwebp == "enabled") {
         loopOption.checked = true;
         loopOption.disabled = true;
+    } else if(uploadType.value == "animated_gifs_hq") {
+        if(/^60$/i.test(fps_option.value)) {
+            fps_option.disabled = true;
+        }
     } else {
         loopOption.checked = true;
         loopOption.disabled = false;

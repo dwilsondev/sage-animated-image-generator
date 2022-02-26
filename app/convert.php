@@ -296,7 +296,7 @@
     
         foreach ($files as $file) {
             if($file !== "animated.mp4" && $file !== "animated.gif" && $file !== "animated.png" && $file !== "animated.webp") {
-                //unlink("temp/$folder/$file");
+                unlink("temp/$folder/$file");
             }
         }
     }

@@ -3,7 +3,9 @@
     // Check user input timestamps when video timestamps option is enabled.
     if(!empty($timestamp_start) && !empty($timestamp_end)) {
         $start = explode(":", $timestamp_start);
+        $start = explode(".", $timestamp_start);
         $end = explode(":", $timestamp_end);
+        $end = explode(".", $timestamp_end);
 
         // There must be a minute and second timecode.
         if(isset($start[0]) && isset($start[1]) && isset($end[0]) && isset($end[1])) {

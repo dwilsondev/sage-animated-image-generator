@@ -1,6 +1,6 @@
 <?php
 
-    // File types supported by AIG. You can remove the types you don't want.
+    // File types supported by SAIG. You can remove the types you don't want.
     // defaults - ['mp4', 'png', 'jpeg', 'jpg', 'webp', 'gif', 'zip']
     $supported_filetypes = ['mp4', 'png', 'jpeg', 'jpg', 'webp', 'gif', 'zip'];
 
@@ -8,7 +8,7 @@
     // and disable the conversions.
     $upload_options = [
         "animated_gifs" => "enabled",
-        "animated_gifs_hq" => "enabled",
+        "animated_gifs_hq" => "disabled",
         "animated_gifs_to_video" => "enabled",
         "animated_webp" => "enabled",
         "animated_png" => "enabled",
@@ -27,10 +27,10 @@
     $default_fps_options = 30;
 
     // Set whether loop option is checked or unchecked by default.
-    $loop_infinite_checked = true;
+    $default_loop_option = "checked";
 
     // Sets file size limit in megabytes.
-    $filesize_limit = 30;
+    $filesize_limit = 10;
 
     // Enable or disable drag n drop upload and auto submit functions.
     // auto submit is for manuel uploads. drag and drop will always auto submit.
@@ -51,14 +51,14 @@
     // Set encoder for WebP. Set webp_encoder to "img2webp" if you have it installed.
     // "ffmpeg" is the default. Enable or disable libwebp when using ffmpeg encoder.
     $webp_encoder = "ffmpeg";
-    $libwebp = "disabled";
+    $libwebp = "enabled";
 
     // Enable or disable video timestamps. Used for trimming video uploads.
     // This feature is experimental. And while it works, it's not been 
     // thoroughly tested.
     $video_timestamps = "disabled";
 
-    // AIG renames all uploaded files for security prior
+    // SAIG renames all uploaded files for security prior
     // to making animation frames. Setting to false disables this and may allow for 
     // better animation results.
     $rename_temp_files = true;
