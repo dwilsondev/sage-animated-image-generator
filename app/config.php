@@ -50,8 +50,9 @@
     $gifski = "app";
 
     // Set encoder for WebP. Set webp_encoder to "img2webp" if you have it installed.
-    // "ffmpeg" is the default.
+    // "ffmpeg" is the default. Enable or disable libwebp when using ffmpeg encoder.
     $webp_encoder = "ffmpeg";
+    $libwebp = "disabled";
 
     // Enable or disable timestamps. Used for trimming video uploads.
     // This feature is experimental. And while it works, it's not been 

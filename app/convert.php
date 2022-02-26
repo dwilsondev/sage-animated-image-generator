@@ -252,8 +252,10 @@
         } elseif($uploadType == "animated_webp" && $upload_options['animated_webp'] == "enabled") {
             if($webp_encoder == "img2webp") {
                 exec("$img2webp $webpLoop $img2webp_string -d 100 -o temp/$folder/animated.webp");
-            } else {
+            } elseif($webp_encoder == "ffmpeg" && $libwebp == "enabled") {
                 exec("$ffmpeg $fps -i temp/$folder/sequence_%d.png $resolution $webpLoop -c libwebp temp/$folder/animated.webp");
+            } else {
+                exec("$ffmpeg $fps -i temp/$folder/sequence_%d.png $resolution $webpLoop temp/$folder/animated.webp");
             }
         } elseif($uploadType == "animated_png" && $upload_options['animated_png'] == "enabled") {
             exec("$ffmpeg $fps -i temp/$folder/sequence_%d.png $resolution $apngLoop temp/$folder/animated.apng");

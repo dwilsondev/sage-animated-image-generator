@@ -135,7 +135,7 @@
                                         <input id="timestamp_end" type="hidden" value="">
                                     <?php endif; ?>
 
-                                    <label>Loop Infinitely? <?php if($apng_encoder !== "apngasm") : ?><span> Only GIF and WebP supported.<?php endif; ?></span></label>
+                                    <label>Loop Infinitely?</label>
                                     <input id="loopOption" type="checkbox" <?php if($loop_infinite_checked == true) { echo "checked"; } ?>>
 
                                     <span id="submit" onclick="generateImg();">Generate</span>
@@ -163,12 +163,21 @@
 document.querySelector('#submit').style.cssText = "display: none";
 <?php endif; ?>
 
+<?php if($webp_encoder == "ffmpeg" && $libwebp == "enabled") : ?>
+libwebp = "enabled";
+<?php else : ?>
+libwebp = "disabled";
+<?php endif; ?>
+
 function loopCheck() {
     let uploadType = document.querySelector('#uploadType');
     let loopOption = document.querySelector('#loopOption');
 
     if(uploadType.value == "animated_gifs_to_video") {
         loopOption.checked = false;
+        loopOption.disabled = true;
+    } else if(uploadType.value == "animated_webp" && libwebp == "enabled") {
+        loopOption.checked = true;
         loopOption.disabled = true;
     } else {
         loopOption.checked = true;
