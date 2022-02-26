@@ -125,7 +125,7 @@
                                     </select>
 
                                     <?php if($video_timestamps == "enabled") : ?>
-                                    <label>Start/Stop Timestamps <span>1 minute limit.</span></label>
+                                    <label>Start/Stop Timestamps.</label>
                                     <div class="timestamps">
                                         <input id="timestamp_start" type="text" placeholder="00:05" maxlength="5" minlength="5">
                                         <input id="timestamp_end" type="text" placeholder="00:10" maxlength="5" minlength="5">

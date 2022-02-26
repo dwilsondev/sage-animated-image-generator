@@ -8,7 +8,7 @@
     $upload_options = [
         "animated_gifs" => "enabled",
         "animated_gifs_hq" => "enabled",
-        "animated_gifs_to_video" => "disabled",
+        "animated_gifs_to_video" => "enabled",
         "animated_webp" => "enabled",
         "animated_png" => "enabled",
     ];
@@ -20,7 +20,7 @@
 
     // Set scale of animation output. Set to "auto" for no change in res.
     // Or set to 1080, 720, 480, or 360.
-    $default_resolution_option = "720";
+    $default_resolution_option = "auto";
 
     // Set default FPS option for Web UI.
     // Set to 1, 15, 25, 30, 50, 60. Note, you can add additional options
@@ -57,7 +57,7 @@
     // Enable or disable timestamps. Used for trimming video uploads.
     // This feature is experimental. And while it works, it's not been 
     // thoroughly tested.
-    $video_timestamps = "disabled";
+    $video_timestamps = "enabled";
 
     // AIG renames all uploaded files to random names for security prior
     // to making animation frames. Setting to false disables this and may allow for 
