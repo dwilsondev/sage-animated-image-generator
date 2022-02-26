@@ -1,5 +1,7 @@
-# sage-animated-image-generator
+# Sage Animated Image Generator
 Webapp for creating Animated GIFs, PNGs, and WebPs.
+
+![screenshot](https://dre-dev.s3.us-east-2.amazonaws.com/public/for_github/saig-screenshot.png)
 
 # About
 Sage Animated Image Generator (SAIG) is a simple Webapp for creating animated GIFs, animated PNGs, and animated WebP images.
