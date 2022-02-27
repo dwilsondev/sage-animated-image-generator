@@ -152,8 +152,8 @@
         </main>
 
         <footer>
-            <p>Created by <a href="https://drewilson.dev" target="_blank">Dre Wilson</a> with help from <a href="https://www.ffmpeg.org/" target="_blank">ffmpeg</a>, <a href="http://apngasm.sourceforge.net/" target="_blank">apngasm</a>, and <a href="https://gif.ski/" target="_blank">gifski</a>.</p>
-            <p>Special thanks to <a href="https://github.com/kornelski" target="_blank">kornelski</a>, creator of gifski.</p>
+            <p>Created by <a href="https://drewilson.dev" target="_blank">Dre Wilson</a> with help from <a href="https://www.ffmpeg.org/" target="_blank">ffmpeg</a>.</p>
+            <p>Special thanks to <a href="https://github.com/kornelski" target="_blank">kornelski</a>.</p>
         </footer>
     </body>
 </html>
