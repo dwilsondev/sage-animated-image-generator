@@ -1,6 +1,7 @@
 <?php
 
     require_once "config.php";
+    require_once "env.php";
 
     header('Content-Type: application/json; charset=utf-8');
 
@@ -115,32 +116,6 @@
     } else {
         $ext = "";
         $multi_upload = true;
-    }
-
-    #####################################################################################
-    #
-    #   SET EXE ENV
-    #
-    #####################################################################################
-    // ffmpeg exe
-    if($ffmpeg == "app" && file_exists("bin/ffmpeg.exe")) {
-        $ffmpeg = realpath("bin")."\\ffmpeg.exe";
-    } else {
-        $ffmpeg = "ffmpeg";
-    }
-
-    // gifski exe
-    if($gifski == "app" && file_exists("bin/gifski.exe")) {
-        $gifski = realpath("bin")."\\gifski.exe";
-    } else {
-        $gifski = "gifski";
-    }
-
-    // img2webp exe
-    if($img2webp == "app" && file_exists("bin/img2webp.exe")) {
-        $img2webp = realpath("bin")."\\img2webp.exe";
-    } else {
-        $img2webp = "img2webp";
     }
 
     #####################################################################################

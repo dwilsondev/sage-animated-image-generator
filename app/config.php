@@ -42,11 +42,11 @@
     // img2webp -- is optional for encoding WebP. (image/zip uploads only)
     // gifski -- is required for high quality Gifs.
     // 
-    // Set to these options to "app" to load from them from app/bin, set to empty 
+    // Set to these options to "bin" to load from them from app/bin, set to empty 
     // to use binary added to your system path.
-    $ffmpeg = "app";
-    $img2webp = "app";
-    $gifski = "app";
+    $ffmpeg = "bin";
+    $img2webp = "bin";
+    $gifski = "bin";
 
     // Set encoder for WebP. Set webp_encoder to "img2webp" if you have it installed.
     // "ffmpeg" is the default. Enable or disable libwebp when using ffmpeg encoder.
