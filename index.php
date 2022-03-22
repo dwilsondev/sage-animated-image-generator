@@ -1,5 +1,5 @@
 <?php
-    require_once "app/config.php";
+    include "app/config.php";
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +32,7 @@
         </header>
 
         <main>
-            <?php if($ffmpeg == "app" && !file_exists("app/bin/ffmpeg.exe")) : ?>
+            <?php if($ffmpeg == "bin" && !is_executable("app/bin/ffmpeg.exe") && !is_executable("app/bin/ffmpeg")) : ?>
                 <div id="no-ffmpeg">
                     <h2>FFmpeg wasn't found. Please download <a href="https://ffmpeg.org/download.html" target="_blank">FFmpeg</a> and place it in the app/bin folder. <br> If you have it installed on your system, set the ffmpeg option to empty in app/config.php</h2>
                 </div>

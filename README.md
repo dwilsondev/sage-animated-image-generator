@@ -160,10 +160,13 @@ Set whether SAIG should rename files to random strings when uploaded prior to cr
 # Known Bugs
 There are some unexplained errors when generating high quality gifs from images/zip of images that are not already sequentially named. It's recommended you generate image stills before uploading.
 
+# Linux
+Couldn't successfully get working on Linux. Not sure why, but the form data wasn't being sent. Will be update for Linux when I can figure it out.
+
 # Created In
 * PHP
 * SCSS
-* Javascript
+* JavaScript
 
 # Created With
 * [ffmpeg](https://www.ffmpeg.org/)

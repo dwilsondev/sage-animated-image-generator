@@ -1,7 +1,7 @@
 <?php
 
-    require_once "config.php";
-    require_once "env.php";
+    include "config.php";
+    include "env.php";
 
     header('Content-Type: application/json; charset=utf-8');
 
@@ -86,6 +86,10 @@
     #   RENAME AND MOVE FILES
     #
     #####################################################################################
+    if(!is_dir("temp")) {
+        mkdir("temp");
+    }
+
     $folder = "temp_".uniqid();
     mkdir("temp/".$folder);
         

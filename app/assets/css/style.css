@@ -87,18 +87,6 @@ option {
   background-color: #5ba379;
 }
 
-::-webkit-input-placeholder {
-  color: #aaaaaa;
-}
-
-:-ms-input-placeholder {
-  color: #aaaaaa;
-}
-
-::-ms-input-placeholder {
-  color: #aaaaaa;
-}
-
 ::placeholder {
   color: #aaaaaa;
 }
@@ -117,16 +105,13 @@ header {
   padding: 1%;
   border-bottom: 20px solid #333;
 }
-
 header h1 {
   font-size: 4rem;
   cursor: pointer;
 }
-
 header h1 a {
   color: whitesmoke;
 }
-
 header h1 span {
   font-size: 1.5rem;
 }
@@ -134,11 +119,10 @@ header h1 span {
 main {
   padding-top: 2%;
 }
-
 main #no-ffmpeg h2 {
+  margin-bottom: 2%;
   text-align: center;
 }
-
 main #download, main #errors, main #wait {
   width: 40%;
   margin: auto;
@@ -148,26 +132,21 @@ main #download, main #errors, main #wait {
   display: block;
   display: none;
 }
-
 main #download {
   background-color: #333;
   color: whitesmoke;
   padding: 1.5%;
 }
-
 main #download:hover {
   background-color: #535353;
 }
-
 main #wait {
   background-color: #185091;
 }
-
 main #errors {
   background: crimson;
   color: whitesmoke;
 }
-
 main .directions {
   text-align: center;
   font-size: 1.2rem;
@@ -180,55 +159,38 @@ footer {
   padding: 2%;
   border-top: 20px solid #333;
 }
-
 footer p {
   font-weight: bolder;
   line-height: 1.5;
 }
 
 .convert-sections {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-box-flex: 2;
-      -ms-flex-positive: 2;
-          flex-grow: 2;
+  flex-direction: row;
+  flex-grow: 2;
   gap: 2%;
 }
-
 .convert-sections .box {
   width: 50%;
   background: #333;
 }
-
 .convert-sections .box h2 {
   background: #222;
   text-align: center;
   padding: 1%;
 }
-
 .convert-sections .box .inner {
   padding: 2%;
 }
-
 .convert-sections .upload {
-  -webkit-box-ordinal-group: 2;
-      -ms-flex-order: 1;
-          order: 1;
+  order: 1;
 }
-
 .convert-sections .upload label {
   cursor: pointer;
 }
-
 .convert-sections .upload .inner {
   cursor: pointer;
 }
-
 .convert-sections .upload input[type=file] {
   position: absolute;
   z-index: 999;
@@ -236,11 +198,9 @@ footer p {
   font-size: 1.5rem;
   display: none;
 }
-
 .convert-sections .upload #upload_area .inner:hover {
   background-color: #464646;
 }
-
 .convert-sections .upload #upload_img {
   position: relative;
   z-index: 1;
@@ -249,62 +209,47 @@ footer p {
   width: 52%;
   cursor: pointer;
 }
-
 .convert-sections .upload #image_preview {
   margin: auto;
   display: none;
 }
-
 .convert-sections .upload #image_preview .inner {
   background-color: #2f5836;
 }
-
 .convert-sections .upload #image_preview img {
   max-width: 100%;
   margin: auto;
   display: block;
 }
-
 .convert-sections .wait {
-  -webkit-box-ordinal-group: 3;
-      -ms-flex-order: 2;
-          order: 2;
+  order: 2;
   text-align: center;
   display: none;
 }
-
 .convert-sections .wait img {
   width: 70%;
   height: auto;
 }
-
 .convert-sections .options {
-  -webkit-box-ordinal-group: 5;
-      -ms-flex-order: 4;
-          order: 4;
+  order: 4;
 }
-
 .convert-sections .options .inner {
   padding: 2%;
 }
-
 .convert-sections .options .inner .timestamps {
   width: 100%;
   display: block;
   margin: auto;
   float: left;
 }
-
 .convert-sections .options .inner .timestamps #timestamp_start {
   width: 45%;
   float: left;
 }
-
 .convert-sections .options .inner .timestamps #timestamp_end {
   width: 45%;
   float: right;
 }
-
 .convert-sections .options .inner #submit {
   position: relative;
   bottom: 0;
@@ -316,7 +261,6 @@ footer p {
   display: block;
   cursor: pointer;
 }
-
 .convert-sections .options .inner #submit:hover {
   background-color: #1e8d4c;
 }
@@ -325,9 +269,11 @@ footer p {
   .content {
     width: 95%;
   }
+
   header h1 {
     font-size: 2.5rem;
   }
+
   main {
     padding-top: 3%;
   }
@@ -336,30 +282,23 @@ footer p {
     padding: 2%;
     font-size: 2.5rem;
   }
+
   .convert-sections {
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-            flex-direction: column;
+    flex-direction: column;
   }
   .convert-sections .upload {
-    -webkit-box-ordinal-group: 2;
-        -ms-flex-order: 1;
-            order: 1;
+    order: 1;
   }
   .convert-sections .wait {
-    -webkit-box-ordinal-group: 3;
-        -ms-flex-order: 2;
-            order: 2;
+    order: 2;
   }
   .convert-sections .options {
-    -webkit-box-ordinal-group: 4;
-        -ms-flex-order: 3;
-            order: 3;
+    order: 3;
   }
   .convert-sections .box {
     width: 100%;
     margin-bottom: 40px;
   }
 }
+
 /*# sourceMappingURL=style.css.map */
