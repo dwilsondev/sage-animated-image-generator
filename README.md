@@ -7,9 +7,9 @@ Webapp for creating Animated GIFs, PNGs, and WebPs.
 Sage Animated Image Generator (SAIG) is a simple Webapp for creating animated GIFs, animated PNGs, and animated WebP images.
 
 # Features
-* Generate Animated GIFs, WebP, and PNGs from mp4 video, PNG/JPG/WebP stills, or a zip containing images.
-* Generate mp4 video from animated GIFs.
-* Supports insane high quality animated GIFs (requires gifski)
+* Generate Animated GIFs, WebP, and PNGs from PNG/JPG/TIF/WebP stills, mp4 video, or a zip containing images.
+* Convert mp4 video to animated GIFs.
+* Generate high quality animated GIFs (requires gifski)
 * Options for animation resolution, framerate, and looping.
 * Create animated images from a portion of video using start and stop timestamps. (experimental)
 * Supports drag and drop to quickly generate animated images.
@@ -27,7 +27,7 @@ And that's it!
 Load up the page in your Web browser and upload images or video to convert them into animated images.
 
 # Post Installation (optional)
-* If you're going to allow drag and drop, increase `max_file_uploads` in your php.ini. The default is 20.
+* If you enable drag and drop, increase `max_file_uploads` in your php.ini. The default is 20.
 * You may want to increase `max_execution_time` in your `php.ini`. High quality gifs and animated PNGs can take a while to process depending on the upload options.
 * Increase `upload_max_filesize` in your php.ini to allow larger uploads.
 
@@ -44,16 +44,14 @@ Set the `$upload_options` `animated_gifs_hq` option to `enabled`.
 Note: Max framerate for high quality gifs is 50fps.
 
 # Better WebP Encoding (with img2webp)
-SAIG uses ffmpeg to create animated WebP images, but you can change this to [img2webp](https://developers.google.com/speed/webp/download), a much better encoder for WebP. img2webp is included as part of the libwebp package from Google. Simply download libwebp, extract the img2webp the binary and place it in the app/bin folder. Or in your system path.
+SAIG uses ffmpeg to create animated WebP images, but you can change this to [img2webp](https://developers.google.com/speed/webp/download), a much better encoder for WebP. img2webp is included as part of the libwebp package from Google. Simply download libwebp, extract the img2webp binary and place it in the app/bin folder. Or in your system path.
 
 If you have img2webp in your system path, set the `$img2webp` variable in the config file to an empty string.
 
 Set the `$webp_encoder` variable to `img2webp`.
 
 # ZIP Upload
-You can upload a zip file containing PNG, JPG, or WebP stills to generate animated images.
-
-Note: All JPEG and WebP images are converted to PNGs prior to generating the animated image.
+You can upload a zip file containing PNG, JPG, WebP, and TIF images to generate animated images.
 
 # Animated GIFs To Video
 You can upload an animated GIF and have it converted mp4 video.
@@ -65,12 +63,12 @@ This feature allows you to input start and stop timestamps for video uploads. SA
 You can change SAIG options in the `config.php` file inside the `app` folder.
 
 ### Supported Filetypes 
-Set which files are permitted to be uploaded. If you remove a file type, those files will not be uploaded. Default types are `mp4`, `png`, `jpg`, `jpeg`, `webp`, `gif`, and `zip`.
+Set which files are permitted to be uploaded. If you remove a file type, those files will not be uploaded. Default types are `mp4`, `png`, `jpg`, `jpeg`, `webp`, `gif`, `tif`, `tiff`, and `zip`.
 
-Note: When zip files are uploaded, all files extracted that are not PNG, JPG, or WebP are deleted.
+Note: When zip files are uploaded, all files extracted that are not PNG, JPG, WebP, or TIF are deleted.
 
 ### Upload Options
-Set the which upload/conversions are allowed. For example, setting `animated_webp` to `disabled` will hide the option in the Web UI, and disable WebP conversions entirely.
+Set the which upload/conversions are allowed. For example, setting `animated_webp` to `disabled` will hide the option in the Web UI, and disable WebP conversions.
 
 ### Default Convert Option
 Sets the default selected convert option in the Web UI. Can be set to:
@@ -97,6 +95,8 @@ Sets the default selected FPS option in the Web UI. Can be set to:
 * 15
 * 1
 
+Note: High quality GIFs are limited to 50fps.
+
 ### Default Loop Option
 Sets whether the loop option is checkbox by default. Set to `checked` to check by default. Or empty to uncheck by default.
 
@@ -110,11 +110,11 @@ Set to `true` to enable file drag and drop onto the upload button. This will aut
 Set to `true` to allow files to be auto submitted when chosen from the upload dialog box. Set to `false` to disable. If auto submit is disabled, a submit button will be displayed in the form.
 
 ### Binary Environments
-Tell SAIG where ffmpeg, gifski, and img2webp binaries are located. If these are set to `bin`, SAIG will look for the binary files in app/bin.
+Tell SAIG whether to use local ffmpeg, gifski, and img2webp binaries or use system binaries. If these are set to `bin`, SAIG will look for the binary files in app/bin.
 
-If these variables are set to empty or anything other than `bin`, SAIG will use the executable from the system path.
+If these variables are set to empty or anything other than `bin`, SAIG will use the system's binary.
 
-For more details, you can look at the `env.php` file in the app folder.
+You can manually set the binary locations in `env.php` file in the app folder.
 
 The defaults are:
 * `$ffmpeg = "bin"`
@@ -124,10 +124,8 @@ The defaults are:
 ### WebP Encoder (image/zip uploads only)
 Sets the encoder for WebP. The default is `ffmpeg`. If you have img2webp installed, set this to `img2webp`.
 
-Note: Video uploads will always use ffmpeg for the encoder.
-
 ### libwebp
-Set whether ffmpeg should use libwebp when creating animated WebP images. Set to `enabled` or `disabled`.
+Set whether ffmpeg should use libwebp when creating animated WebP. Set to `enabled` or `disabled`.
 
 ### Video Timestamps (experimental)
 Enable or disable video timestamps feature for video uploads. Set to `enabled` or `disabled`.
@@ -142,12 +140,13 @@ Set whether SAIG should rename files to random strings when uploaded prior to cr
 # Supported Upload Filetypes
 * .png
 * .jpg/jpeg
+* .tif/tiff
 * .webp
 * animated .gif (for video only)
 * .mp4
-* .zip (containing .png, .jpg, or .webp images)
+* .zip (containing a mix of PNG, JPG, WebP, and TIF images)
 
-# Supported Export Filetypes
+# Output Filetypes
 * Animated GIFs (as .gif)
 * Animated WebP (as .webp)
 * Animated PNG (as .png)

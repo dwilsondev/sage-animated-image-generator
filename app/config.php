@@ -2,7 +2,7 @@
 
     // File types supported by SAIG. You can remove the types you don't want.
     // defaults - ['mp4', 'png', 'jpeg', 'jpg', 'webp', 'gif', 'zip']
-    $supported_filetypes = ['mp4', 'png', 'jpeg', 'jpg', 'webp', 'gif', 'zip'];
+    $supported_filetypes = ['mp4', 'png', 'jpeg', 'jpg', 'webp', 'gif', 'tif', 'tiff', 'zip'];
 
     // Enable or disable upload options. Disabling will hide them from Web UI
     // and disable the conversions.

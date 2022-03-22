@@ -58,7 +58,7 @@
         $file_ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         $mime = mime_content_type($file['tmp_name']);
 
-        if(!in_array($file_ext, $supported_filetypes) || (($file_ext !== "mp4" && $mime !== "video/mp4") && ($file_ext !== "png" && $mime !== "image/png") && ($file_ext !== "webp" && $mime !== "image/webp") && ($file_ext !== "jpeg" && $mime !== "image/jpg") && ($file_ext !== "jpg" && $mime !== "image/jpg") && ($file_ext !== "gif" && $mime !== "image/gif") && ($file_ext !== "zip" && $mime !== "application/zip"))) {
+        if(!in_array($file_ext, $supported_filetypes) || (($file_ext !== "mp4" && $mime !== "video/mp4") && ($file_ext !== "png" && $mime !== "image/png") && ($file_ext !== "webp" && $mime !== "image/webp") && ($file_ext !== "jpeg" && $mime !== "image/jpg") && ($file_ext !== "jpg" && $mime !== "image/jpg") && ($file_ext !== "gif" && $mime !== "image/gif") && ($file_ext !== "tif" && $mime !== "image/tiff") && ($file_ext !== "tiff" && $mime !== "image/tiff") && ($file_ext !== "zip" && $mime !== "application/zip"))) {
             unlink($file['tmp_name']);
             unset($_FILES[$key]);
             continue;
@@ -243,16 +243,16 @@
         $img2webp_string = "";
 
         foreach($files as $f) {
-            $file_ext = pathinfo($f, PATHINFO_EXTENSION); 
-
-            if(exif_imagetype("temp/$folder/$f") == IMAGETYPE_PNG || exif_imagetype("temp/$folder/$f") == IMAGETYPE_JPEG || exif_imagetype("temp/$folder/$f") == IMAGETYPE_WEBP) {
-                
+            if(exif_imagetype("temp/$folder/$f") == IMAGETYPE_PNG || exif_imagetype("temp/$folder/$f") == IMAGETYPE_JPEG || exif_imagetype("temp/$folder/$f") == IMAGETYPE_WEBP || exif_imagetype("temp/$folder/$f") == IMAGETYPE_TIFF_II || exif_imagetype("temp/$folder/$f") == IMAGETYPE_TIFF_MM) { 
                 if(exif_imagetype("temp/$folder/$f") == IMAGETYPE_JPEG) {
                     rename("temp/$folder/$f", "temp/$folder/sequence_$itr.jpg");
                     exec("$ffmpeg -i temp/$folder/sequence_$itr.jpg temp/$folder/sequence_$itr.png");
                 } elseif(exif_imagetype("temp/$folder/$f") == IMAGETYPE_WEBP) {
                     rename("temp/$folder/$f", "temp/$folder/sequence_$itr.webp");
                     exec("$ffmpeg -i temp/$folder/sequence_$itr.webp temp/$folder/sequence_$itr.png");
+                } elseif(exif_imagetype("temp/$folder/$f") == IMAGETYPE_TIFF_II || exif_imagetype("temp/$folder/$f") == IMAGETYPE_TIFF_MM) {
+                    rename("temp/$folder/$f", "temp/$folder/sequence_$itr.tif");
+                    exec("$ffmpeg -i temp/$folder/sequence_$itr.tif temp/$folder/sequence_$itr.png");
                 } elseif(exif_imagetype("temp/$folder/$f") == IMAGETYPE_PNG) {
                     rename("temp/$folder/$f", "temp/$folder/sequence_$itr.png");
                 }  
