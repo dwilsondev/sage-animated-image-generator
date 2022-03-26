@@ -108,9 +108,6 @@ function generateImg(dNd = "") {
 
         fetch(url, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            mode: 'cors',
-            cache: 'default',
             body: formData
         })
             .then(response => response.json())

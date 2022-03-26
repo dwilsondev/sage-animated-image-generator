@@ -68,7 +68,7 @@
         $filesize = filesize($file['tmp_name']);
         $filesize = round($filesize / 1024 / 1024, 1);
 
-        if($filesize > $filesize_limit || $filesize <= 0) {
+        if($filesize > $filesize_limit || $filesize < 0) {
             $data['error'] = "One or more of the files are too big. Files should be less than $filesize_limit megs all together.";
             echo json_encode($data);
             die();
