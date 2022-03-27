@@ -30,7 +30,7 @@
     $default_loop_option = "checked";
 
     // Sets file size limit in megabytes.
-    $filesize_limit = 10;
+    $filesize_limit = 512;
 
     // Enable or disable drag n drop upload and auto submit functions.
     // auto submit is for manuel uploads. drag and drop will always auto submit.
