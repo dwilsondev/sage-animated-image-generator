@@ -30,6 +30,11 @@ And that's it!
 
 Load up the page in your Web browser and upload images or video to convert them into animated images.
 
+# Installation With Composer
+Make sure you have Composer installed and run the following in your terminal.
+
+`composer require dwilsondev/sage-animated-image-generator:dev-main`
+
 # Configure PHP (recommended)
 * If you enable drag and drop, increase `max_file_uploads` in your php.ini. The default is 20.
 * You may want to increase `max_execution_time` in your `php.ini`. High quality gifs and animated PNGs can take a while to process depending on the upload options.
