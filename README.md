@@ -1,6 +1,8 @@
 # Sage Animated Image Generator
 Webapp for creating Animated GIFs, PNGs, and WebPs.
 
+<img src="https://cdn.drewilson.dev/public/for_github/sage-logo.png" style="width:10%; margin: auto; margin-bottom: 2%; display: block; " alt="logo">
+
 ![screenshot](https://dre-dev.s3.us-east-2.amazonaws.com/public/for_github/saig-screenshot.png)
 
 # About
@@ -154,6 +156,23 @@ Set whether SAIG should rename files to random strings when uploaded prior to cr
 * Animated PNG (as .png)
 * Video (as .mp4)
 
+# Webapp
+SAIG can be turned into a Webapp for desktop and mobile. A service worker is set up. All you have to do is change the src and start_url in the sage.webmanifest file located in app/assets/js to the domain of your site. You can use relative or absolute paths.
+
+You must have a secure website with SSL setup in order for the service worker to work.
+
+If you do this, I suggest blocking access to the Webapp so that only devices in your network can use the app. You can block access with an `.htaccess` file at the root of your SAIG folder with the following code:
+
+```
+<LIMIT GET>
+	Order deny,allow
+	Deny from all
+	allow from localhost
+	allow from 127.0.0.1
+	allow from 192.168
+</LIMIT>
+```
+
 # Limitations
 * img2webp encoding does not support custom framerate.
 * libwebp ffmpeg encode will always loop.
@@ -162,7 +181,6 @@ Set whether SAIG should rename files to random strings when uploaded prior to cr
 # Known Bugs
 * There are some unexplained errors when generating high quality gifs from images/zip of images that are not already sequentially named. It's recommended you generate image stills before uploading.
 * img2webp encoding may throw errors if all images uploaded are not the same resolution.
-
 
 # Created In
 * PHP
