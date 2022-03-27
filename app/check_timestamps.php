@@ -13,9 +13,7 @@
             $s = $start[1];
 
             if(($s < 0 || $s > 60) || ($m < 0 || $m > 1) || ((empty($s) && empty($m)))) {
-                $data['error'] = "Bad start timestamp, try again.";
-                echo json_encode($data);
-                die();
+                jError("Bad start timestamp, try again.");
             } else {
                 $timestamp_start_minute = $m;
                 $timestamp_start_second = $s;
@@ -25,9 +23,8 @@
             $s = $end[1];
 
             if(($s < 0 || $s > 60) || ($m < 0 || $m > 1) || ((empty($s) && empty($m)))) {
-                $data['error'] = "Bad end timestamp, try again.";
-                echo json_encode($data);
-                die();
+                $data['error'] = "";
+                jError("Bad end timestamp, try again.");
             } else {
                 $timestamp_end_minute = $m;
                 $timestamp_end_second = $s;
@@ -35,9 +32,7 @@
 
             $trim = true;
         } else {
-            $data['error'] = "Bad timestamp, try again.";
-            echo json_encode($data);
-            die();
+            jError("Bad timestamp, try again.");
         }   
     } else {
         $trim = false;
