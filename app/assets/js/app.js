@@ -118,8 +118,10 @@ function generateImg(dNd = "") {
                     download.href = result['link'];
                     download.style.cssText = "display: block";
                     
-                    preview_image.src = result['link'];
-                    preview.style.cssText = "display: block";
+                    if(result['display_image_preview'] == true) {
+                        preview_image.src = result['link'];
+                        preview.style.cssText = "display: block";                        
+                    }
                 } else if(result['error']) {
                     // Errors were found, display error message.
                     errors.innerHTML = result['error'];

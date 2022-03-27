@@ -178,6 +178,8 @@
         $ext_final = "gif";
     }
 
+    $data['display_image_preview'] = true;
+
     #####################################################################################
     #
     #   VIDEO CONVERSION
@@ -205,11 +207,15 @@
             rename("temp/$folder/animated.apng", "temp/$folder/animated.png");
         } elseif($upload_options['animated_gifs'] == "enabled") {
             exec("$ffmpeg -i temp/$folder/$filename $trim $fps $resolution $loop temp/$folder/animated.gif");
-        }         
+        }       
+
+        $data['display_image_preview'] = false;  
     }
 
     if($ext == "gif" && $uploadType == "animated_gifs_to_video" && $upload_options['animated_gifs_to_video'] == "enabled") {
-        exec("$ffmpeg $fps -i temp/$folder/$filename temp/$folder/animated.mp4");      
+        exec("$ffmpeg -i temp/$folder/$filename temp/$folder/animated.mp4");  
+
+        $data['display_image_preview'] = false;    
     } elseif($ext !== "gif" && $uploadType == "animated_gifs_to_video" && $upload_options['animated_gifs_to_video'] == "enabled") {
         $data['error'] = "Upload an animated GIF to make a video.";
         echo json_encode($data);
