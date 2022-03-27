@@ -26,7 +26,7 @@
             <?php endif; ?>
         </script>
 
-        <link rel="manifest" href="app/assets/js/sage.webmanifest">
+        <!-- service worker <link rel="manifest" href="app/assets/js/sage.webmanifest"> -->
     </head>
     <body>
         <header>

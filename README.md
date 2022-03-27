@@ -157,11 +157,13 @@ Set whether SAIG should rename files to random strings when uploaded prior to cr
 * Video (as .mp4)
 
 # Webapp
-SAIG can be turned into a Webapp for desktop and mobile. A service worker is set up. All you have to do is change the src and start_url in the sage.webmanifest file located in app/assets/js to the domain of your site. You can use relative or absolute paths.
+SAIG can be turned into a Webapp for desktop and mobile. A service worker is set up. All you have to do is change the src and start_url in the sage.webmanifest file located in app/assets/js to the domain of your site. You can use relative or absolute paths. Then uncomment this line in index.php:
+
+`<!-- service worker <link rel="manifest" href="app/assets/js/sage.webmanifest"> -->`
 
 You must have a secure website with SSL setup in order for the service worker to work.
 
-If you do this, I suggest blocking access to the Webapp so that only devices in your network can use the app. You can block access with an `.htaccess` file at the root of your SAIG folder with the following code:
+If you do this, I suggest blocking access to the Webapp so that only devices in your network can use the app. You can block access with an .htaccess file at the root of your SAIG folder with the following code:
 
 ```
 <LIMIT GET>
@@ -182,6 +184,11 @@ If you do this, I suggest blocking access to the Webapp so that only devices in 
 * There are some unexplained errors when generating high quality gifs from images/zip of images that are not already sequentially named. It's recommended you generate image stills before uploading.
 * img2webp encoding may throw errors if all images uploaded are not the same resolution.
 
+# Note
+* This was just a fun project. I do not recommend using this for a commercial site unless you want to rewrite some of the code.
+* High quality GIFs, WebP, and PNG conversions can take a very long time to process depending on the size(s) of the files. You should increase the max execution time for PHP.
+* I have not written any lock checks for this app yet. So once a conversion starts, it will continue processing on the server even if the user closes the tab. Also, multiple process can run at the same time. This can be bad if you have tons of requests.
+  
 # Created In
 * PHP
 * SCSS
