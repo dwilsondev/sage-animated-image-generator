@@ -13,10 +13,5 @@
     "version": "1.0.0",
     "license": [
         "Apache-2.0"
-     ],
-    "extra": {
-        "branch-alias": {
-            "dev-main": "1.0-dev"
-        }
-    }
+     ]
 }
