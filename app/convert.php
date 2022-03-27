@@ -5,6 +5,14 @@
 
     header('Content-Type: application/json; charset=utf-8');
 
+    if(empty($_POST)) {
+        jError("Critical server error, no data was sent to the server.");
+    }
+
+    if(empty($_FILES)) {
+        jError("Critical server error, files were sent to the server.");
+    }
+
     #####################################################################################
     #
     #   CHECK USER INPUT
@@ -21,9 +29,7 @@
     
     // Upload option error.
     if(empty($uploadType) && $uploadType !== "animated_gifs" && $uploadType !== "animated_gifs_hq" && $uploadType !== "animated_webp" && $uploadType !== "animated_png" && $uploadType !== "animated_gifs_to_video") {
-        $data['error'] = "Unsupported upload option. Upload failed.";
-        echo json_encode($data);
-        die();
+        jError("Unsupported upload option. Upload failed.");
     }
 
     #####################################################################################
@@ -49,9 +55,7 @@
                 throw new RuntimeException('Unknown error.');
             }
         } catch (RuntimeException $e) {
-            $data['error'] = $e->getMessage();
-            echo json_encode($data);
-            die();
+            jError($e->getMessage());
         }
 
         // Check file type. Remove and unset files that are not supported. 
@@ -69,16 +73,12 @@
         $filesize = round($filesize / 1024 / 1024, 1);
 
         if($filesize > $filesize_limit || $filesize < 0) {
-            $data['error'] = "One or more of the files are too big. Files should be less than $filesize_limit megs all together.";
-            echo json_encode($data);
-            die();
+            jError("One or more of the files are too big. Files should be less than $filesize_limit megs all together.");
         }
     }
 
     if(empty($_FILES)) {
-        $data['error'] = "None of the files uploaded are supported.";
-        echo json_encode($data);
-        die();
+        jError("None of the files uploaded are supported.");
     }
 
     #####################################################################################
@@ -105,11 +105,9 @@
 
         // Move file.
         if(!move_uploaded_file($file['tmp_name'], "temp"."/".$folder."/".$filename)) {
-            cleanUp($folder);
-
-            $data['error'] = "Failed to move some files. Can't continue.";
-            echo json_encode($data);
-            die();                
+            cleanUp($folder);   
+            
+            jError("Failed to move some files. Can't continue.");
         }   
     }
 
@@ -208,23 +206,43 @@
         } elseif($upload_options['animated_gifs'] == "enabled") {
             exec("$ffmpeg -i temp/$folder/$filename $trim $fps $resolution $loop temp/$folder/animated.gif");
         }       
-
-        $data['display_image_preview'] = false;  
-    }
-
-    if($ext == "gif" && $uploadType == "animated_gifs_to_video" && $upload_options['animated_gifs_to_video'] == "enabled") {
-        exec("$ffmpeg -i temp/$folder/$filename temp/$folder/animated.mp4");  
-
-        $data['display_image_preview'] = false;    
-    } elseif($ext !== "gif" && $uploadType == "animated_gifs_to_video" && $upload_options['animated_gifs_to_video'] == "enabled") {
-        $data['error'] = "Upload an animated GIF to make a video.";
-        echo json_encode($data);
-        die();
     }
 
     #####################################################################################
     #
-    #   MULTI-FILE CONVERSION
+    #   ANIMATED GIF TO VIDEO CONVERSION
+    #
+    #####################################################################################
+    if($ext == "gif" && isGIFAnimated("temp/$folder/$filename") && $uploadType == "animated_gifs_to_video" && $upload_options['animated_gifs_to_video'] == "enabled") {
+        exec("$ffmpeg -i temp/$folder/$filename temp/$folder/animated.mp4");  
+
+        $data['display_image_preview'] = false;    
+    } elseif($ext !== "gif" && $uploadType == "animated_gifs_to_video" && $upload_options['animated_gifs_to_video'] == "enabled") {
+        jError("The image you uploaded is not an animated GIF.");
+    }
+
+    #####################################################################################
+    #
+    #   ANIMATED GIF TO ANIMATED IMAGE CONVERSION
+    #
+    #####################################################################################
+    if($ext == "gif" && isGIFAnimated("temp/$folder/$filename") &&  $uploadType == "animated_gifs") {
+        exec("$ffmpeg -i temp/$folder/$filename $resolution $webpLoop temp/$folder/animated.gif");
+    } elseif($ext == "gif" && isGIFAnimated("temp/$folder/$filename") && $uploadType == "animated_webp") {
+        if($webp_encoder == "ffmpeg" && $libwebp == "enabled") {
+            exec("$ffmpeg -i temp/$folder/$filename $resolution $webpLoop -c libwebp temp/$folder/animated.webp");
+        } else {
+            exec("$ffmpeg -i temp/$folder/$filename $resolution $webpLoop temp/$folder/animated.webp");
+        }
+    } elseif($ext == "gif" && isGIFAnimated("temp/$folder/$filename") && $uploadType == "animated_png") {
+        exec("$ffmpeg -i temp/$folder/$filename $resolution $apngLoop temp/$folder/animated.apng");
+            
+        rename("temp/$folder/animated.apng", "temp/$folder/animated.png");
+    } 
+
+    #####################################################################################
+    #
+    #   MULTI-IMAGE CONVERSION
     #
     #####################################################################################
     if($ext == "zip" || $multi_upload == true) {
@@ -235,15 +253,17 @@
                 $zip->extractTo("temp/$folder");
                 $zip->close();
             } else {
-                $data['error'] = "Failed to extract zip. Upload failed.";
-                echo json_encode($data);
-                die();
+                jError("Failed to extract zip. Upload failed.");
             }
         }
 
         $files = scandir("temp/$folder", SCANDIR_SORT_ASCENDING);
         unset($files[0]);
         unset($files[1]);
+
+        if(empty($files)) {
+            jError("No files were found in zip.");
+        }
 
         natsort($files);
 
@@ -253,22 +273,16 @@
         $img2webp_string = "";
 
         foreach($files as $f) {
-            if(exif_imagetype("temp/$folder/$f") == IMAGETYPE_PNG || exif_imagetype("temp/$folder/$f") == IMAGETYPE_JPEG || exif_imagetype("temp/$folder/$f") == IMAGETYPE_WEBP || exif_imagetype("temp/$folder/$f") == IMAGETYPE_TIFF_II || exif_imagetype("temp/$folder/$f") == IMAGETYPE_TIFF_MM) { 
-                if(exif_imagetype("temp/$folder/$f") == IMAGETYPE_JPEG) {
-                    rename("temp/$folder/$f", "temp/$folder/sequence_$itr.jpg");
-                    exec("$ffmpeg -i temp/$folder/sequence_$itr.jpg temp/$folder/sequence_$itr.png");
-                } elseif(exif_imagetype("temp/$folder/$f") == IMAGETYPE_WEBP) {
-                    rename("temp/$folder/$f", "temp/$folder/sequence_$itr.webp");
-                    exec("$ffmpeg -i temp/$folder/sequence_$itr.webp temp/$folder/sequence_$itr.png");
-                } elseif(exif_imagetype("temp/$folder/$f") == IMAGETYPE_TIFF_II || exif_imagetype("temp/$folder/$f") == IMAGETYPE_TIFF_MM) {
-                    rename("temp/$folder/$f", "temp/$folder/sequence_$itr.tif");
-                    exec("$ffmpeg -i temp/$folder/sequence_$itr.tif temp/$folder/sequence_$itr.png");
-                } elseif(exif_imagetype("temp/$folder/$f") == IMAGETYPE_PNG) {
-                    rename("temp/$folder/$f", "temp/$folder/sequence_$itr.png");
-                }  
+            if(exif_imagetype("temp/$folder/$f") == IMAGETYPE_PNG || exif_imagetype("temp/$folder/$f") == IMAGETYPE_JPEG || exif_imagetype("temp/$folder/$f") == IMAGETYPE_WEBP || exif_imagetype("temp/$folder/$f") == IMAGETYPE_TIFF_II || exif_imagetype("temp/$folder/$f") == IMAGETYPE_TIFF_MM || exif_imagetype("temp/$folder/$f") == IMAGETYPE_GIF) { 
+
+                $fext = strtolower(pathinfo($f, PATHINFO_EXTENSION));;
+
+                rename("temp/$folder/$f", "temp/$folder/sequence_$itr.$fext");
+                exec("$ffmpeg -i temp/$folder/sequence_$itr.$fext temp/$folder/sequence_$itr.png");
 
                 $img2webp_string .= " temp/$folder/sequence_$itr.png";  
                 $itr = $itr + 1;
+
             }
         }
 
@@ -300,18 +314,25 @@
     if(!file_exists("temp/$folder/animated.gif") && !file_exists("temp/$folder/animated.webp") && !file_exists("temp/$folder/animated.png") && !file_exists("temp/$folder/animated.mp4")) {
         cleanUp($folder);
 
-        $data['error'] = "Could not generate image or video.";
-        echo json_encode($data);
-        die();
+        jError("Could not generate image or video.");
     }
 
     #####################################################################################
     #
-    #   CLEAN UP
+    #   GENERATE DOWNLOAD LINK
     #
     #####################################################################################
     cleanUp($folder);
+    
+    $data['link'] = "app/temp/$folder/animated.$ext_final";
 
+    echo json_encode($data);
+
+    #####################################################################################
+    #
+    #   HELPER FUNCTIONS
+    #
+    #####################################################################################
     function cleanUp($folder) {
         $files = scandir("temp/$folder");
         unset($files[0]);
@@ -324,11 +345,45 @@
         }
     }
 
-    #####################################################################################
-    #
-    #   GENERATE DOWNLOAD LINK
-    #
-    #####################################################################################
-    $data['link'] = "app/temp/$folder/animated.$ext_final";
+    // Sends JSON error back to user.
+    function jError($message) {
+        $data['error'] = $message;
+        echo json_encode($data);
+        die();
+    }
 
-    echo json_encode($data);
+    // Code by ZeBadger https://www.php.net/manual/en/function.imagecreatefromgif.php#59787
+    // Only slightly modified.
+    function isGIFAnimated($filename) {
+        $filecontents = file_get_contents($filename);
+
+        $str_loc = 0;
+        $count = 0;
+
+        while($count < 2) { # There is no point in continuing after we find a 2nd frame
+            $where1 = strpos($filecontents, "\x00\x21\xF9\x04", $str_loc);
+            
+            if($where1 === FALSE) {
+                break;
+            } else {
+                $str_loc = $where1 + 1;
+                $where2 = strpos($filecontents, "\x00\x2C", $str_loc);
+                
+                if($where2 === FALSE) {
+                    break;
+                } else {
+                    if($where1 + 8 == $where2) {
+                        $count++;
+                    }
+                
+                    $str_loc = $where2 + 1;
+                }
+            }
+        }
+
+        if ($count > 1) {
+            return true;
+        } else {
+            jError("The image you uploaded is not animated.");
+        }
+    }
