@@ -60,7 +60,7 @@ You can upload an animated GIF and have it converted mp4 video.
 This feature allows you to input start and stop timestamps for video uploads. SAIG will then make an animated image from that portion of video.
 
 # Configuration
-You can change SAIG options in the `config.php` file inside the `app` folder.
+You can change SAIG options in the `config.php` file inside the app folder.
 
 ### Supported Filetypes 
 Set which files are permitted to be uploaded. If you remove a file type, those files will not be uploaded. Default types are `mp4`, `png`, `jpg`, `jpeg`, `webp`, `gif`, `tif`, `tiff`, and `zip`.
