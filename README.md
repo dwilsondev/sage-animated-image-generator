@@ -18,7 +18,7 @@ Sage Animated Image Generator (SAIG) is a simple Webapp for creating animated GI
 # Installation
 SAIG requires a Webserver with PHP, and [ffmpeg](https://github.com/FFmpeg/FFmpeg).
 
-Download and extract SAIG from the releases page and place it on your Webserver.
+Download and extract SAIG ZIP and place it on your Webserver.
 
 If you don't have ffmpeg installed on your system, download it and place it in the app/bin folder named `ffmpeg`.
 
