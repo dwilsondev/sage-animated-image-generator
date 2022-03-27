@@ -25,6 +25,8 @@
                 manuel_submit = false;
             <?php endif; ?>
         </script>
+
+        <link rel="manifest" href="app/assets/js/sage.webmanifest">
     </head>
     <body>
         <header>
