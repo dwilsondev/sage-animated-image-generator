@@ -58,7 +58,7 @@
     // thoroughly tested.
     $video_timestamps = "disabled";
 
-    // SAIG renames all uploaded files for security prior
-    // to making animation frames. Setting to false disables this and may allow for 
-    // better animation results.
-    $rename_temp_files = true;
+    // Enable or disable renaming files when uploaded to the server. Setting this
+    // to "true" can be good for security, but may ruin the generated image for 
+    // certain image sequences.
+    $rename_temp_files = false;

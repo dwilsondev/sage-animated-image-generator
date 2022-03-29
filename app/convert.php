@@ -101,6 +101,7 @@
             $filename = uniqid().".".$file_ext;
         } else {
             $filename = $file['name'];
+            $filename = str_replace(" ", "-", $filename);
         }
 
         // Move file.
@@ -191,20 +192,20 @@
         }
 
         if ($uploadType == "animated_gifs_hq" && $upload_options['animated_gifs_hq'] == "enabled") {
-            exec("$ffmpeg -i temp/$folder/$filename $trim $resolution temp/$folder/sequence_%04d.png");
-            exec("$gifski --quality 100 $gifskiRes $gifskiFPS $gifskiLoop -o temp/$folder/animated.gif temp/$folder/sequence_*.png");
-        }  elseif($uploadType == "animated_webp" && $upload_options['animated_webp'] == "enabled") {
+            convert("$ffmpeg -i temp/$folder/$filename $trim $resolution temp/$folder/sequence_%04d.png");
+            convert("$gifski --quality 100 $gifskiRes $gifskiFPS $gifskiLoop -o temp/$folder/animated.gif temp/$folder/sequence_*.png");
+        } elseif($uploadType == "animated_webp" && $upload_options['animated_webp'] == "enabled") {
             if($webp_encoder == "ffmpeg" && $libwebp == "enabled") {
-                exec("$ffmpeg -i temp/$folder/$filename $trim $fps $resolution $webpLoop -c libwebp temp/$folder/animated.webp");
+                convert("$ffmpeg -i temp/$folder/$filename $trim $fps $resolution $webpLoop -c libwebp temp/$folder/animated.webp");
             } else {
-                exec("$ffmpeg -i temp/$folder/$filename $trim $fps $resolution $webpLoop temp/$folder/animated.webp");
+                convert("$ffmpeg -i temp/$folder/$filename $trim $fps $resolution $webpLoop temp/$folder/animated.webp");
             }
         } elseif($uploadType == "animated_png" && $upload_options['animated_png'] == "enabled") {
-            exec("$ffmpeg -i temp/$folder/$filename $trim $fps $resolution $apngLoop temp/$folder/animated.apng");
-            
+            convert("$ffmpeg -i temp/$folder/$filename $trim $fps $resolution $apngLoop temp/$folder/animated.apng");
+
             rename("temp/$folder/animated.apng", "temp/$folder/animated.png");
         } elseif($upload_options['animated_gifs'] == "enabled") {
-            exec("$ffmpeg -i temp/$folder/$filename $trim $fps $resolution $loop temp/$folder/animated.gif");
+            convert("$ffmpeg -i temp/$folder/$filename $trim $fps $resolution $loop temp/$folder/animated.gif");
         }       
     }
 
@@ -214,8 +215,7 @@
     #
     #####################################################################################
     if($ext == "gif" && isGIFAnimated("temp/$folder/$filename") && $uploadType == "animated_gifs_to_video" && $upload_options['animated_gifs_to_video'] == "enabled") {
-        exec("$ffmpeg -i temp/$folder/$filename temp/$folder/animated.mp4");  
-
+        convert("$ffmpeg -i temp/$folder/$filename temp/$folder/animated.mp4");
         $data['display_image_preview'] = false;    
     } elseif($ext !== "gif" && $uploadType == "animated_gifs_to_video" && $upload_options['animated_gifs_to_video'] == "enabled") {
         jError("The image you uploaded is not an animated GIF.");
@@ -226,17 +226,17 @@
     #   ANIMATED GIF TO ANIMATED IMAGE CONVERSION
     #
     #####################################################################################
-    if($ext == "gif" && isGIFAnimated("temp/$folder/$filename") &&  $uploadType == "animated_gifs") {
-        exec("$ffmpeg -i temp/$folder/$filename $resolution $webpLoop temp/$folder/animated.gif");
+    if($ext == "gif" && isGIFAnimated("temp/$folder/$filename") &&  $uploadType == "animated_gifs") {    
+        convert("$ffmpeg -i temp/$folder/$filename $resolution $webpLoop temp/$folder/animated.gif");
     } elseif($ext == "gif" && isGIFAnimated("temp/$folder/$filename") && $uploadType == "animated_webp") {
         if($webp_encoder == "ffmpeg" && $libwebp == "enabled") {
-            exec("$ffmpeg -i temp/$folder/$filename $resolution $webpLoop -c libwebp temp/$folder/animated.webp");
+            convert("$ffmpeg -i temp/$folder/$filename $resolution $webpLoop -c libwebp temp/$folder/animated.webp");
         } else {
-            exec("$ffmpeg -i temp/$folder/$filename $resolution $webpLoop temp/$folder/animated.webp");
+            convert("$ffmpeg -i temp/$folder/$filename $resolution $webpLoop temp/$folder/animated.webp");
         }
     } elseif($ext == "gif" && isGIFAnimated("temp/$folder/$filename") && $uploadType == "animated_png") {
-        exec("$ffmpeg -i temp/$folder/$filename $resolution $apngLoop temp/$folder/animated.apng");
-            
+        convert("$ffmpeg -i temp/$folder/$filename $resolution $apngLoop temp/$folder/animated.apng");
+
         rename("temp/$folder/animated.apng", "temp/$folder/animated.png");
     } 
 
@@ -274,35 +274,32 @@
 
         foreach($files as $f) {
             if(exif_imagetype("temp/$folder/$f") == IMAGETYPE_PNG || exif_imagetype("temp/$folder/$f") == IMAGETYPE_JPEG || exif_imagetype("temp/$folder/$f") == IMAGETYPE_WEBP || exif_imagetype("temp/$folder/$f") == IMAGETYPE_TIFF_II || exif_imagetype("temp/$folder/$f") == IMAGETYPE_TIFF_MM || exif_imagetype("temp/$folder/$f") == IMAGETYPE_GIF) { 
-
                 $fext = strtolower(pathinfo($f, PATHINFO_EXTENSION));;
-
                 rename("temp/$folder/$f", "temp/$folder/sequence_$itr.$fext");
-                exec("$ffmpeg -i temp/$folder/sequence_$itr.$fext temp/$folder/sequence_$itr.png");
+
+                convert("$ffmpeg -i temp/$folder/sequence_$itr.$fext temp/$folder/sequence_$itr.png");
 
                 $img2webp_string .= " temp/$folder/sequence_$itr.png";  
                 $itr = $itr + 1;
-
             }
         }
 
         // Create animated image from image sequence.
         if($uploadType == "animated_gifs_hq" && $upload_options['animated_gifs_hq'] == "enabled") {
-            exec("$gifski --quality 100 $gifskiRes $gifskiFPS $gifskiLoop -o temp/$folder/animated.gif temp/$folder/sequence_*.png");
+            convert("$gifski --quality 100 $gifskiRes $gifskiFPS $gifskiLoop -o temp/$folder/animated.gif temp/$folder/sequence_*.png");
         } elseif($uploadType == "animated_webp" && $upload_options['animated_webp'] == "enabled") {
             if($webp_encoder == "img2webp") {
-                exec("$img2webp $webpLoop $img2webp_string -d 100 -o temp/$folder/animated.webp");
+                convert("$img2webp $webpLoop $img2webp_string -d 100 -o temp/$folder/animated.webp");
             } elseif($webp_encoder == "ffmpeg" && $libwebp == "enabled") {
-                exec("$ffmpeg $fps -i temp/$folder/sequence_%d.png $resolution $webpLoop -c libwebp temp/$folder/animated.webp");
+                convert("$ffmpeg $fps -i temp/$folder/sequence_%d.png $resolution $webpLoop -c libwebp temp/$folder/animated.webp");
             } else {
-                exec("$ffmpeg $fps -i temp/$folder/sequence_%d.png $resolution $webpLoop temp/$folder/animated.webp");
+                convert("$ffmpeg $fps -i temp/$folder/sequence_%d.png $resolution $webpLoop temp/$folder/animated.webp");
             }
         } elseif($uploadType == "animated_png" && $upload_options['animated_png'] == "enabled") {
-            exec("$ffmpeg $fps -i temp/$folder/sequence_%d.png $resolution $apngLoop temp/$folder/animated.apng");
-            
+            convert("$ffmpeg $fps -i temp/$folder/sequence_%d.png $resolution $apngLoop temp/$folder/animated.apng");
             rename("temp/$folder/animated.apng", "temp/$folder/animated.png");
         } elseif($uploadType == "animated_gifs" && $upload_options['animated_gifs'] == "enabled") {
-            exec("$ffmpeg $fps -i temp/$folder/sequence_%d.png $resolution $loop  temp/$folder/animated.gif");
+            convert("$ffmpeg $fps -i temp/$folder/sequence_%d.png $resolution $loop  temp/$folder/animated.gif");
         } 
     }
 
@@ -333,6 +330,22 @@
     #   HELPER FUNCTIONS
     #
     #####################################################################################
+    function convert($command) {
+        exec($command." 2>&1", $output, $result);
+
+        if($result) {
+            jError("System Error: ".$output[0]);
+        }
+    }
+
+    // Sends app error back to user.
+    function jError($message) {
+        $data['error'] = $message;
+        echo json_encode("App Error: ".$data);
+        die();
+    }
+
+    // Clean up temp folder.
     function cleanUp($folder) {
         $files = scandir("temp/$folder");
         unset($files[0]);
@@ -343,13 +356,6 @@
                 unlink("temp/$folder/$file");
             }
         }
-    }
-
-    // Sends JSON error back to user.
-    function jError($message) {
-        $data['error'] = $message;
-        echo json_encode($data);
-        die();
     }
 
     // Code by ZeBadger https://www.php.net/manual/en/function.imagecreatefromgif.php#59787
