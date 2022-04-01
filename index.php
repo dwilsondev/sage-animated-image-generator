@@ -152,8 +152,7 @@
         </main>
 
         <footer>
-            <p>v1.0 Created by <a href="https://drewilson.dev" target="_blank">Dre Wilson</a> with help from <a href="https://www.ffmpeg.org/" target="_blank">ffmpeg</a>.</p>
-            <p>Special thanks to <a href="https://github.com/kornelski" target="_blank">kornelski</a>.</p>
+            <p>v1.0 Created by <a href="https://drewilson.dev" target="_blank">Dre Wilson</p>
         </footer>
     </body>
 </html>
