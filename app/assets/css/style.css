@@ -58,6 +58,8 @@ select {
   font-size: 2rem;
   padding: 2%;
   margin-bottom: 15px;
+  outline: none;
+  border: none;
   cursor: pointer;
 }
 
@@ -68,7 +70,6 @@ input[type=text] {
   font-size: 2rem;
   padding: 2%;
   margin-bottom: 15px;
-  border: none;
 }
 
 select:focus {
