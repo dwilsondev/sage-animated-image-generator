@@ -30,7 +30,7 @@
     </head>
     <body>
         <header>
-            <h1><a href="./">Sage Animated Image Generator <span>v1.0</span></a></h1>
+            <h1><a href="./">Sage Animated Image Generator</a></h1>
         </header>
 
         <main>
@@ -152,7 +152,7 @@
         </main>
 
         <footer>
-            <p>Created by <a href="https://drewilson.dev" target="_blank">Dre Wilson</a> with help from <a href="https://www.ffmpeg.org/" target="_blank">ffmpeg</a>.</p>
+            <p>v1.0 Created by <a href="https://drewilson.dev" target="_blank">Dre Wilson</a> with help from <a href="https://www.ffmpeg.org/" target="_blank">ffmpeg</a>.</p>
             <p>Special thanks to <a href="https://github.com/kornelski" target="_blank">kornelski</a>.</p>
         </footer>
     </body>
