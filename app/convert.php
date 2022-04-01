@@ -341,7 +341,7 @@
     // Sends app error back to user.
     function jError($message) {
         $data['error'] = $message;
-        echo json_encode("App Error: ".$data);
+        echo json_encode($data);
         die();
     }
 
